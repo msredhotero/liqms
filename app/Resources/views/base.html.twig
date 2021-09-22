@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>{% block title %}Liquidaciones{% endblock %}</title>
+
+        {% block stylesheets %}
+
+            <!-- Bootstrap Menu -->
+            <link rel="stylesheet" href="{{ asset('css/jquery.metisMenu.css') }}">
+            <!-- Bootstrap core CSS -->
+            <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+
+            <link href="{{ asset('css/working_example.css') }}" rel="stylesheet">
+            <link href="{{ asset('css/jquery.jqplot.min.css') }}" rel="stylesheet">
+
+            <!-- Estilos personalizados -->
+            <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+            <!-- Iconos font-awsome -->
+            <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
+            <!-- Fuente OpenSans -->
+            <link href="{{ asset('css/opensans.css') }}" rel="stylesheet">
+            <link rel="stylesheet" href="{{ asset('css/bootstrap-datetimepicker.min.css') }}">
+
+            <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+            <!--[if lt IE 9]>
+              <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+              <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+            <![endif]-->
+
+        {% endblock %}
+
+        {% block javascripts %}
+            <!-- Bootstrap core JavaScript=================== -->
+            <!-- LibrerÃ­a jQuery requerida por los plugins de JavaScript -->
+		<script src="{{ asset('js/jquery.js') }}"></script>
+		<script src="{{ asset('js/bootstrap.min.js') }}"></script>
+
+		<script src="{{ asset('js/jquery.metisMenu.js') }}"></script>
+                <script src="{{ asset('js/jquery.number.min.js') }}"></script>
+
+
+
+                <script type="text/javascript"
+                    src="{{ asset('js/bootstrap-datepicker.js') }}">
+                </script>
+
+                <script type="text/javascript"
+                    src="{{ asset('js/locales/bootstrap-datepicker.es.js') }}">
+                </script>
+
+		<script>
+			$(function () {
+
+				$('#menu').metisMenu({
+                    toggle: false
+                });
+
+				$('#menu2').metisMenu({
+					toggle: false
+				});
+                $('#salirSesion').click(function(){
+                    location.href = "{{ path("logout") }}";
+                });
+			});
+		</script>
+
+                <script>
+		$(document).ready(function(){
+			$('#colapsarMenu').click(function() {
+			if ($('#colapsarMenu').attr('class') == 'glyphicon glyphicon-align-left') {
+                            $('#contenido').css( { marginLeft : '1%' } );
+                            $('#contenido').removeClass('col-md-9');
+                            $('#contenido').addClass('col-md-11');
+                            $('#main2').hide();
+                            $('#colapsarMenu').removeClass('glyphicon glyphicon-align-left');
+                            $('#colapsarMenu').addClass('glyphicon glyphicon-align-justify');
+			} else {
+                            $('#contenido').css( { marginLeft : '1%' } );
+                            $('#contenido').removeClass('col-md-11');
+                            $('#contenido').addClass('col-md-9');
+                            $('#main2').show();
+                            $('#colapsarMenu').removeClass('glyphicon glyphicon-align-justify');
+                            $('#colapsarMenu').addClass('glyphicon glyphicon-align-left');
+			}
+			});
+		});
+		</script>
+        {% endblock %}
+    </head>
+    <body>
+        {% block modals %}
+            {% if app.user.multidep_multi %}
+                {% render(url('form_cambiar_dependencia')) %}
+            {% endif %}
+        {% endblock %}
+        <div class="row header navbar-fixed-top">
+            <div class="col-md-1 logo" title="INTRANET - Logo BA">
+                <img src="{{ asset('img/BA-gris.png') }}" alt="Logo BA" />
+            </div>
+            <div class="col-xs-12 col-md-9">
+                <div class="sistema">INTRANET - <a href="">Gestión de Liquidaciones</a></div>
+            </div>
+
+            <div class="col-xs-12 col-md-2">
+                <div class="btn-group sesion pull-right">
+                    <div role="menu" class="btn-group perfil pull-right">
+                        <button type="button" class="btn btn-default dropdown-toggle pull-right" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-user white"></i>
+                            <span class="white">{{ app.user.username }} ({{ app.user.multidep_actual_codigo|raw }}) <i class="caret white"></i></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% if app.user.multidep_multi|raw %}
+                            <li>
+                                <button type="button" class="btn btn-link">{{ app.user.multidep_actual_descripcion|raw }}</button>
+                                <button type="button" class="btn btn-ba"
+                                        data-toggle="modal" data-target="#modalCambiarDependencia">Cambiar dependencia</button>
+                            </li>
+                            {% else %}
+                            <li>
+                                <button type="button" class="btn btn-link">{{ app.user.DescEstablecimiento|raw }}</button>
+                            </li>
+                            {% endif %}
+                            <li>
+                                <button id="salirSesion" type="button" class="btn btn-danger cerrar-sesion">Salir</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12">
+                <ol class="breadcrumb  hidden-xs">
+                    {% block guia %}
+                        <li><span class="glyphicon glyphicon-align-left" id="colapsarMenu" style="color: #FFF;"></span></li>
+                        <li><a href="{{ path("logout") }}"><span class="glyphicon glyphicon-list"></span></a>/</li>
+
+                    {% endblock %}
+                        <div class="btn btn-volver pull-right">
+                            <strong><a href="javascript:history.back(0)"> << Volver </a></strong>
+                        </div>
+
+                </ol>
+            </div>
+        </div>
+        <!---- Menu -->
+        <div class="container-fluid" id="main">
+            <div class="row">
+                <div class="col-xs-12 col-md-2" id="main2">
+
+                    <ul id="menu">
+                        {% if is_granted('ROLE_15') %}
+                        <li>
+                            <a href="#">Administración Cupos<span class="fa plus-minus"></span></a>
+
+                            <ul>
+
+                                <li><a href="#">Cupos Anuales<span class="fa plus-minus"></span></a>
+
+                                    <ul>
+                                        <li><a href="{{ path('cuposanuales') }}">Consulta</a></li>
+                                        {% if (is_granted('ROLE_16') or is_granted('ROLE_17')) %}
+                                        <li><a href="{{ path('cuposanuales_new') }}">Nuevo</a></li>
+                                        <li><a href="{{ path('cuposanuales_gastado') }}">Gastado</a></li>
+                                        {% endif  %}
+                                    </ul>
+                                </li>
+
+
+
+                                <li><a href="#">Cupos Mensuales<span class="fa plus-minus"></span></a>
+
+                                    <ul>
+                                        <li><a href="{{ path('cupos') }}">Consulta</a></li>
+                                        {% if (is_granted('ROLE_16') or is_granted('ROLE_17')) %}
+                                        <li><a href="{{ path('cupos_new') }}">Nuevo Cupo</a></li>
+                                        <li><a href="{{ path('periodo') }}">Copiar Período</a></li>
+                                        <li><a href="{{ path('cupos_modificarestados') }}">Modificar Estados</a></li>
+                                        <li><a href="{{ path('cupos_reportesporcuentas') }}">Reportes Por Cuentas</a></li>
+                                        <li><a href="{{ path('fechacierre') }}">Fecha Cierre</a></li>
+                                        <li><a href="{{ path('liquidaciones_listararchivos') }}">Planillas Cargadas</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+
+
+
+
+                            </ul>
+                        </li>
+                        {% endif %}
+                        {% if is_granted('ROLE_21') %}
+                        <li><a href="#">Cupos Mensuales<span class="fa plus-minus"></span></a>
+
+                            <ul>
+                                <li><a href="{{ path('cupos') }}">Consulta</a></li>
+                                <li><a href="{{ path('cupos_new') }}">Nuevo Cupo</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">Hospitales<span class="fa plus-minus"></span></a>
+
+                            <ul>
+                                <li><a href="{{ path('vacantes') }}">Vacantes</a></li>
+                                <li><a href="{{ path('liquidaciones_reportes') }}">Reportes</a></li>
+                            </ul>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a href="#">Liquidaciones<span class="fa plus-minus"></span></a>
+
+                            <ul>
+                                <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Carga</a></li>
+								<li><a href="{{ path('liquidaciones_valorhora') }}">Valor Hora</a></li>
+                                <li><a href="{{ path('liquidaciones_buscarhistoricopersona') }}">Histórico Pagos Agentes</a></li>
+                            </ul>
+                        </li>
+
+
+
+
+
+                    </ul>
+
+                </div>
+                <!---- Fin de Menu -->
+                <!-- FORMULARIO -->
+
+                <div class="col-xs-12 col-md-9" id="contenido">
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            {% block contenido %}
+
+                            {% endblock %}
+
+                        </div>
+                    </div>
+                    <div class="e50"></div>
+                </div>
+            </div><!-- Fin de la FILA -->
+        </div><!-- /.container -->
+
+
+
+
+
+
+    </body>
+</html>

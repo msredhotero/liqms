@@ -1,0 +1,137 @@
+parameters:
+#    database_driver:   oci8
+#    database_host:     
+#    database_port:     ~
+#    database_name:     
+#    database_user:     
+#    database_password: 
+#    mailer_transport:  smtp
+#    mailer_host:       127.0.0.1
+#    mailer_user:       null
+#    mailer_password:   null
+#    locale:            es_ES
+#    secret:            ThisTokenIsNotSoSecretChangeIt
+    
+#    database_driver:   oci8
+#    database_host:     
+#    database_port:     ~
+#    database_name:     
+#    database_user:     
+#    database_password: 
+#    mailer_transport:  smtp
+#    mailer_host:       127.0.0.1
+#    mailer_user:       null
+#    mailer_password:   null
+#    locale:            es_ES
+#    secret:            ThisTokenIsNotSoSecretChangeIt    
+
+    database_driver:   oci8
+    database_host:     
+    database_port:     ~
+    database_name:     
+    database_user:     
+    database_password: 
+    mailer_transport:  smtp
+    mailer_host:       127.0.0.1
+    mailer_user:       null
+    mailer_password:   null
+    locale:            es_ES
+    secret:            ThisTokenIsNotSoSecretChangeIt  
+    
+#    database_driver_referencias:   oci8
+#    database_host_referencias:     
+#    database_port_referencias:     ~
+#    database_name_referencias:     
+#    database_user_referencias:     
+#    database_password_referencias: 
+#    mailer_transport_referencias:  smtp
+#    mailer_host_referencias:       127.0.0.1
+#    mailer_user_referencias:       null
+#    mailer_password_referencias:   null
+#    locale_referencias:            en
+#    secret_referencias:            ThisTokenIsNotSoSecretChangeIt
+
+    database_driver_referencias:   oci8
+    database_host_referencias:     
+    database_port_referencias:     ~
+    database_name_referencias:     
+    database_user_referencias:     
+    database_password_referencias: 
+    mailer_transport_referencias:  smtp
+    mailer_host_referencias:       127.0.0.1
+    mailer_user_referencias:       null
+    mailer_password_referencias:   null
+    locale_referencias:            en
+    secret_referencias:            ThisTokenIsNotSoSecretChangeIt    
+    
+#    database_driver_intranet:   oci8
+#    database_host_intranet:     
+#    database_port_intranet:     ~
+#    database_name_intranet:     
+#    database_user_intranet:     
+#    database_password_intranet: 
+
+    database_driver_intranet:   oci8
+    database_host_intranet:     
+    database_port_intranet:     ~
+    database_name_intranet:     
+    database_user_intranet:     
+    database_password_intranet: 
+
+    database_driver_ms: 
+    database_host_ms: 
+    database_port_ms: 
+    database_name_ms: 
+    database_user_ms: 
+    database_password_ms: $
+    locale_ms: en
+    secret_ms: ThisTokenIsNotSoSecretChangeIt
+    
+    
+    database_driver_ms_web: 
+    database_host_ms_web: 
+    database_port_ms_web: 
+    database_name_ms_web: 
+    database_user_ms_web: 
+    database_password_ms_web: 
+    locale_ms_web: en
+    secret_ms_web: ThisTokenIsNotSoSecretChangeIt
+    
+    
+    
+    database_driver_odbc: 
+    database_host_odbc: 
+    database_port_odbc: 
+    database_name_odbc: 
+    database_user_odbc: 
+    database_password_odbc: 
+    locale_odbc: en
+    secret_odbc: ThisTokenIsNotSoSecretChangeIt
+#    host_server:       https://sistemas-desa.ms.gba.gov.ar
+#    host_server:       http://sistemas.ms.gba.gov.ar
+
+#parameters:
+#    database_driver: pdo_mysql
+#    database_host: 127.0.0.1
+#    database_port: null
+#    database_name: symfony
+#    database_user: root
+#    database_password: null
+#    mailer_transport: smtp
+#    mailer_host: 127.0.0.1
+#    mailer_user: null
+#    mailer_password: null
+#    locale: en
+    secret: 
+    
+#    host_server:       http://localhost
+
+#    host_server:       http://localhost
+    debug_toolbar: true
+    debug_redirects: false
+    use_assetic_controller: true
+    
+#    host_server:       http://php-desa.ms.gba.gov.ar
+    host_server:       https://sistemas.ms.gba.gov.ar
+#    host_server:       https://sistemas.ms.gba.gov.ar
+

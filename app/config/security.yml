@@ -1,0 +1,55 @@
+jms_security_extra:
+    secure_all_services: false
+    expressions: true
+
+security:
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+
+    providers:
+         administrators:
+            entity:
+                class: LiquidacionesIntranetBundle:UsuariosI
+                manager_name: intranet
+
+#    access_decision_manager:
+        # strategy can be: affirmative, unanimous or consensus
+#        strategy: affirmative
+#        allow_if_all_abstain: true
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        intranet:
+            pattern:   ^/
+            intranet: { login_path: %host_server%/intranet/intranet.php }
+            access_denied_url: /unauthorized
+            logout:
+                intention: logout
+                path: /logout
+                target: %host_server%/intranet/intranet.php
+                invalidate_session: false
+
+    role_hierarchy:
+        ROLE_2: ROLE_1
+        ROLE_1: [ROLE_3, ROLE_4, ROLE_5, ROLE_6, ROLE_7, ROLE_8, ROLE_20, ROLE_21]
+        ROLE_9: ROLE_3
+        ROLE_10: ROLE_4
+        ROLE_11: ROLE_5
+        ROLE_12: ROLE_6
+        ROLE_13: ROLE_7
+        ROLE_14: ROLE_8
+        ROLE_15: ROLE_1
+        ROLE_21: ROLE_15
+        ROLE_16: [ROLE_1, ROLE_15, ROLE_21]
+        ROLE_17: [ROLE_1, ROLE_15, ROLE_21]
+        ROLE_18: [ROLE_1]
+        ROLE_19: [ROLE_16, ROLE_15, ROLE_21]
+
+    access_control:
+        - { path: ^/default, access: "user.CodSistema == '1229' and hasRole('ROLE_15')" }
+        - { path: ^/CuposAnuales, access: "user.CodSistema == '1229' and hasRole('ROLE_15')" }
+        - { path: ^/Cupos, access: "user.CodSistema == '1229' and hasRole('ROLE_15')" }
+        - { path: ^/Liquidaciones, access: "user.CodSistema == '1229' and hasRole('ROLE_1', 'ROLE_9', 'ROLE_10', 'ROLE_11', 'ROLE_12', 'ROLE_13', 'ROLE_14', 'ROLE_16', 'ROLE_17', 'ROLE_19', 'ROLE_20', 'ROLE_22')" }

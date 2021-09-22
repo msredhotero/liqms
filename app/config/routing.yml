@@ -1,0 +1,38 @@
+liquidaciones_haberes:
+    resource: "@LiquidacionesHaberesBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+liquidaciones_referencias:
+    resource: "@LiquidacionesReferenciasBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+liquidaciones_cupos_anuales:
+    resource: "@LiquidacionesCuposAnualesBundle/Controller/"
+    type:     annotation
+    prefix:   /
+    
+min_salud_ba_intranet:
+    resource: "@LiquidacionesIntranetBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+min_salud_ba_parte_novedades:
+    resource: "@LiquidacionesParteNovedadesBundle/Controller/"
+    type:     annotation
+    prefix:   /
+    
+    
+logout:
+    pattern: /logout
+    
+unauthorized:
+    pattern: /unauthorized
+    defaults:
+        _controller: FrameworkBundle:Redirect:urlRedirect
+        path: %host_server%/intranet/intranet.php
+        permanent: false
+
+
+
