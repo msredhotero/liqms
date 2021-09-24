@@ -1,0 +1,124 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Dependencias</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Codigo</th>
+                <td>{{ entity.codigo }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ entity.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Estableid</th>
+                <td>{{ entity.estableId }}</td>
+            </tr>
+            <tr>
+                <th>Codigoexte</th>
+                <td>{{ entity.codigoExte }}</td>
+            </tr>
+            <tr>
+                <th>Entecaratulador</th>
+                <td>{{ entity.entecaratulador }}</td>
+            </tr>
+            <tr>
+                <th>Tipodependencia</th>
+                <td>{{ entity.tipoDependencia }}</td>
+            </tr>
+            <tr>
+                <th>Domicilio</th>
+                <td>{{ entity.domicilio }}</td>
+            </tr>
+            <tr>
+                <th>Telefono</th>
+                <td>{{ entity.telefono }}</td>
+            </tr>
+            <tr>
+                <th>Paisid</th>
+                <td>{{ entity.paisId }}</td>
+            </tr>
+            <tr>
+                <th>Provid</th>
+                <td>{{ entity.provId }}</td>
+            </tr>
+            <tr>
+                <th>Partidoid</th>
+                <td>{{ entity.partidoId }}</td>
+            </tr>
+            <tr>
+                <th>Localiid</th>
+                <td>{{ entity.localiId }}</td>
+            </tr>
+            <tr>
+                <th>Tipojurisdiccion</th>
+                <td>{{ entity.tipoJurisdiccion }}</td>
+            </tr>
+            <tr>
+                <th>Regionid</th>
+                <td>{{ entity.regionId }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ entity.email }}</td>
+            </tr>
+            <tr>
+                <th>Director</th>
+                <td>{{ entity.director }}</td>
+            </tr>
+            <tr>
+                <th>Tipoestable</th>
+                <td>{{ entity.tipoEstable }}</td>
+            </tr>
+            <tr>
+                <th>Habilitado</th>
+                <td>{{ entity.habilitado }}</td>
+            </tr>
+            <tr>
+                <th>Fechamodif</th>
+                <td>{{ entity.fechaModif|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Usumodif</th>
+                <td>{{ entity.usuModif }}</td>
+            </tr>
+            <tr>
+                <th>Codpost</th>
+                <td>{{ entity.codpost }}</td>
+            </tr>
+            <tr>
+                <th>Auxtipojurisdiccion</th>
+                <td>{{ entity.auxTipoJurisdiccion }}</td>
+            </tr>
+            <tr>
+                <th>Latitud</th>
+                <td>{{ entity.latitud }}</td>
+            </tr>
+            <tr>
+                <th>Longitud</th>
+                <td>{{ entity.longitud }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('dependencias') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('dependencias_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

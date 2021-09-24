@@ -1,0 +1,101 @@
+{% extends '::base.html.twig' %}
+
+{% block contenido -%}
+    <h1>Imputacionpresupuestaria list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Jurisdiccion</th>
+                <th>Descentidad</th>
+                <th>Codjurisdiccion</th>
+                <th>Regimenestatutario</th>
+                <th>Agrupamiento</th>
+                <th>Programadescripcion</th>
+                <th>Ace</th>
+                <th>Aco</th>
+                <th>Pan</th>
+                <th>Programa</th>
+                <th>Subprograma</th>
+                <th>Proyecto</th>
+                <th>Grupo</th>
+                <th>Aes</th>
+                <th>Subgrupo</th>
+                <th>Obra</th>
+                <th>Ubicaciongeografica</th>
+                <th>Finalidad</th>
+                <th>Funcion</th>
+                <th>Subfuncion</th>
+                <th>Procedencia</th>
+                <th>Fuente</th>
+                <th>Partidappal</th>
+                <th>Partidasubppal</th>
+                <th>Partidaparcial</th>
+                <th>Partidasubparcial</th>
+                <th>Entidad</th>
+                <th>Origenfondos</th>
+                <th>Codinstitucional</th>
+                <th>Descimputacionpresup</th>
+                <th>Multidependencia</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('imputacionpresupuestaria_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.jurisdiccion }}</td>
+                <td>{{ entity.descEntidad }}</td>
+                <td>{{ entity.codJurisdiccion }}</td>
+                <td>{{ entity.regimenestatutario }}</td>
+                <td>{{ entity.agrupamiento }}</td>
+                <td>{{ entity.programaDescripcion }}</td>
+                <td>{{ entity.aCE }}</td>
+                <td>{{ entity.aCO }}</td>
+                <td>{{ entity.pAN }}</td>
+                <td>{{ entity.programa }}</td>
+                <td>{{ entity.subPrograma }}</td>
+                <td>{{ entity.proyecto }}</td>
+                <td>{{ entity.grupo }}</td>
+                <td>{{ entity.aES }}</td>
+                <td>{{ entity.subGrupo }}</td>
+                <td>{{ entity.obra }}</td>
+                <td>{{ entity.ubicacionGeografica }}</td>
+                <td>{{ entity.finalidad }}</td>
+                <td>{{ entity.funcion }}</td>
+                <td>{{ entity.subFuncion }}</td>
+                <td>{{ entity.procedencia }}</td>
+                <td>{{ entity.fuente }}</td>
+                <td>{{ entity.partidaPpal }}</td>
+                <td>{{ entity.partidaSubppal }}</td>
+                <td>{{ entity.partidaParcial }}</td>
+                <td>{{ entity.partidaSubparcial }}</td>
+                <td>{{ entity.entidad }}</td>
+                <td>{{ entity.origenFondos }}</td>
+                <td>{{ entity.codInstitucional }}</td>
+                <td>{{ entity.descImputacionpresup }}</td>
+                <td>{{ entity.multidependencia }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('imputacionpresupuestaria_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('imputacionpresupuestaria_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('imputacionpresupuestaria_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

@@ -1,0 +1,88 @@
+{% extends '::base.html.twig' %}
+
+{% block contenido -%}
+    <a href="{% path('dependencias_verDependencias' %}">Ver Depeden</a>
+    <h1>Dependencias list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Estableid</th>
+                <th>Codigoexte</th>
+                <th>Entecaratulador</th>
+                <th>Tipodependencia</th>
+                <th>Domicilio</th>
+                <th>Telefono</th>
+                <th>Paisid</th>
+                <th>Provid</th>
+                <th>Partidoid</th>
+                <th>Localiid</th>
+                <th>Tipojurisdiccion</th>
+                <th>Regionid</th>
+                <th>Email</th>
+                <th>Director</th>
+                <th>Tipoestable</th>
+                <th>Habilitado</th>
+                <th>Fechamodif</th>
+                <th>Usumodif</th>
+                <th>Codpost</th>
+                <th>Auxtipojurisdiccion</th>
+                <th>Latitud</th>
+                <th>Longitud</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('dependencias_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.codigo }}</td>
+                <td>{{ entity.nombre }}</td>
+                <td>{{ entity.estableId }}</td>
+                <td>{{ entity.codigoExte }}</td>
+                <td>{{ entity.entecaratulador }}</td>
+                <td>{{ entity.tipoDependencia }}</td>
+                <td>{{ entity.domicilio }}</td>
+                <td>{{ entity.telefono }}</td>
+                <td>{{ entity.paisId }}</td>
+                <td>{{ entity.provId }}</td>
+                <td>{{ entity.partidoId }}</td>
+                <td>{{ entity.localiId }}</td>
+                <td>{{ entity.tipoJurisdiccion }}</td>
+                <td>{{ entity.regionId }}</td>
+                <td>{{ entity.email }}</td>
+                <td>{{ entity.director }}</td>
+                <td>{{ entity.tipoEstable }}</td>
+                <td>{{ entity.habilitado }}</td>
+                <td>{% if entity.fechaModif %}{{ entity.fechaModif|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ entity.usuModif }}</td>
+                <td>{{ entity.codpost }}</td>
+                <td>{{ entity.auxTipoJurisdiccion }}</td>
+                <td>{{ entity.latitud }}</td>
+                <td>{{ entity.longitud }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('dependencias_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('dependencias_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('dependencias_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

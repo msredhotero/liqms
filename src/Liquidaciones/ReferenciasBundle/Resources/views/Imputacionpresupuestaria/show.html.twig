@@ -1,0 +1,160 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Imputacionpresupuestaria</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Jurisdiccion</th>
+                <td>{{ entity.jurisdiccion }}</td>
+            </tr>
+            <tr>
+                <th>Juridisdiccionauxiliar</th>
+                <td>{{ entity.juridisdiccionAuxiliar }}</td>
+            </tr>
+            <tr>
+                <th>Descentidad</th>
+                <td>{{ entity.descEntidad }}</td>
+            </tr>
+            <tr>
+                <th>Codjurisdiccion</th>
+                <td>{{ entity.codJurisdiccion }}</td>
+            </tr>
+            <tr>
+                <th>Regimenestatutario</th>
+                <td>{{ entity.regimenestatutario }}</td>
+            </tr>
+            <tr>
+                <th>Agrupamiento</th>
+                <td>{{ entity.agrupamiento }}</td>
+            </tr>
+            <tr>
+                <th>Programadescripcion</th>
+                <td>{{ entity.programaDescripcion }}</td>
+            </tr>
+            <tr>
+                <th>Ace</th>
+                <td>{{ entity.aCE }}</td>
+            </tr>
+            <tr>
+                <th>Aco</th>
+                <td>{{ entity.aCO }}</td>
+            </tr>
+            <tr>
+                <th>Pan</th>
+                <td>{{ entity.pAN }}</td>
+            </tr>
+            <tr>
+                <th>Programa</th>
+                <td>{{ entity.programa }}</td>
+            </tr>
+            <tr>
+                <th>Subprograma</th>
+                <td>{{ entity.subPrograma }}</td>
+            </tr>
+            <tr>
+                <th>Proyecto</th>
+                <td>{{ entity.proyecto }}</td>
+            </tr>
+            <tr>
+                <th>Grupo</th>
+                <td>{{ entity.grupo }}</td>
+            </tr>
+            <tr>
+                <th>Aes</th>
+                <td>{{ entity.aES }}</td>
+            </tr>
+            <tr>
+                <th>Subgrupo</th>
+                <td>{{ entity.subGrupo }}</td>
+            </tr>
+            <tr>
+                <th>Obra</th>
+                <td>{{ entity.obra }}</td>
+            </tr>
+            <tr>
+                <th>Ubicaciongeografica</th>
+                <td>{{ entity.ubicacionGeografica }}</td>
+            </tr>
+            <tr>
+                <th>Finalidad</th>
+                <td>{{ entity.finalidad }}</td>
+            </tr>
+            <tr>
+                <th>Funcion</th>
+                <td>{{ entity.funcion }}</td>
+            </tr>
+            <tr>
+                <th>Subfuncion</th>
+                <td>{{ entity.subFuncion }}</td>
+            </tr>
+            <tr>
+                <th>Procedencia</th>
+                <td>{{ entity.procedencia }}</td>
+            </tr>
+            <tr>
+                <th>Fuente</th>
+                <td>{{ entity.fuente }}</td>
+            </tr>
+            <tr>
+                <th>Partidappal</th>
+                <td>{{ entity.partidaPpal }}</td>
+            </tr>
+            <tr>
+                <th>Partidasubppal</th>
+                <td>{{ entity.partidaSubppal }}</td>
+            </tr>
+            <tr>
+                <th>Partidaparcial</th>
+                <td>{{ entity.partidaParcial }}</td>
+            </tr>
+            <tr>
+                <th>Partidasubparcial</th>
+                <td>{{ entity.partidaSubparcial }}</td>
+            </tr>
+            <tr>
+                <th>Entidad</th>
+                <td>{{ entity.entidad }}</td>
+            </tr>
+            <tr>
+                <th>Codestable</th>
+                <td>{{ entity.codEstable }}</td>
+            </tr>
+            <tr>
+                <th>Origenfondos</th>
+                <td>{{ entity.origenFondos }}</td>
+            </tr>
+            <tr>
+                <th>Codinstitucional</th>
+                <td>{{ entity.codInstitucional }}</td>
+            </tr>
+            <tr>
+                <th>Descimputacionpresup</th>
+                <td>{{ entity.descImputacionpresup }}</td>
+            </tr>
+            <tr>
+                <th>Multidependencias</th>
+                <td>{{ entity.multidependencias }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('imputacionpresupuestaria') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('imputacionpresupuestaria_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}
