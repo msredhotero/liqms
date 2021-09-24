@@ -1,0 +1,15 @@
+{% block form_row %}
+<div class="form-group col-md-6">
+    {{ form_label(form) }}
+    <div class="input-group col-md-12">
+        {% if atributos is defined %}
+            {{ form_widget(form, atributos) }}
+        {% else %}
+            {{ form_widget(form) }}
+        {% endif %}
+    </div>
+    <div class="text-danger">
+        {{ form_errors(form) }}
+    </div>
+</div>
+{% endblock%}

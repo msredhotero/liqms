@@ -1,0 +1,119 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link type="text/css" rel="stylesheet"
+        href="{{ asset('css/datepicker3.css') }}" />
+    <link href="{{ asset('css/working_example.css') }}" rel="stylesheet">
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script type="text/javascript" 
+        src="{{ asset('js/bootstrap-datepicker.js') }}">
+    </script>
+    
+    <script type="text/javascript" 
+        src="{{ asset('js/locales/bootstrap-datepicker.es.js') }}">
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+                $('#minsaludba_partenovedadesbundle_personalnovedadtype_FechaDesde, #minsaludba_partenovedadesbundle_personalnovedadtype_FechaHasta').datepicker({
+                    format: "dd/mm/yyyy",
+                    todayBtn: false,
+                    language: "es",
+                    autoclose: true,
+                    todayHighlight: true
+                });
+        });
+    </script>
+
+{% endblock %}
+
+{% block contenido %}
+
+<h1>Ingresar una nueva novedad</h1>
+
+<form action="{{ path('personalnovedad_create') }}" method="post" {{ form_enctype(form) }}>
+    
+    <div class="row">
+        <div class="form-group col-md-12"> 
+            <label class="required" for="">
+                Legajo - Apellido y Nombre:
+            </label>
+            <div class="input-group col-md-12">
+                {{ plantelEntity.Legajo }} - {{ plantelEntity.Apellido }}, {{ plantelEntity.Nombre }}
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+    
+    <div class="row">
+        <div class="form-group col-md-12"> 
+            <label class="required" for="">
+                {{ form_label(form.Novedad) }}
+            </label>
+            <div class="input-group col-md-12">
+                {{ form_widget(form.Novedad, { 'attr': {'class': 'form-control'} }) }}
+                {{ form_errors(form.Novedad) }}
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+    
+    <div class="row">
+        <div class="form-group col-md-6">    
+            <label class="required" for="">
+                {{ form_label(form.FechaDesde) }}
+            </label>
+            <div class="input-group col-md-12">
+                {{ form_widget(form.FechaDesde, { 'attr': {'class': 'form-control'} }) }} 
+                <span class="input-group-addon">-</span>
+                {{ form_widget(form.FechaHasta, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+            <div class="text-danger">
+                {{ form_errors(form.FechaDesde) }}
+                {{ form_errors(form.FechaHasta) }}
+            </div>
+        </div>
+        <div class="form-group col-md-6">   
+            <label class="required" for="">
+                {{ form_label(form.CantidadMinutosPorDia) }}
+            </label>
+            <div class="input-group col-md-12">
+                {{ form_widget(form.CantidadMinutosPorDia, { 'attr': {'class': 'form-control'} }) }}
+                {{ form_errors(form.CantidadMinutosPorDia) }}
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+    
+    <div class="row">
+        <div class="form-group col-md-12">   
+            <label class="required" for="">
+                {{ form_label(form.Observaciones) }}
+            </label>
+            <div class="input-group col-md-12">
+                {{ form_widget(form.Observaciones, { 'attr': {'class': 'form-control'} }) }}
+                {{ form_errors(form.Observaciones) }}
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+    
+    {{ form_rest(form) }}
+    <div class="row">
+        <div class="col-md-8" style="margin-top: 30px;">
+            <button type="submit" class="btn btn-ba">Guardar</button>
+            <a href="{{ path('personalnovedad_list', { 'IdPersonalCargo': entity.RefPersonalCargo }) }}" class="btn btn-default">
+                Volver a la lista
+            </a>
+        </div>
+    </div>
+</form>
+            
+{% endblock %}

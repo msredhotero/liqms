@@ -1,0 +1,44 @@
+{% extends '::base.html.twig' %}
+
+{% block contenido %}
+
+    <h1>Bienvenido al sistema de Parte de Novedades</h1>
+    
+    {% if app.session.flashbag.has('aviso_error') %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+            </button>
+        {% for flashMessage in app.session.flashbag.get('aviso_error') %}
+            <p>
+                {{ flashMessage }}
+            </p>
+        {% endfor %}
+        </div>
+    {% endif %}
+    
+    <div class="row">
+        <div class="col-md-12" style="margin-top: 30px;">
+            {{ grid_search(grid) }}
+        </div>
+    </div>
+    <!-- /.row -->
+    
+    <div class="row-fluid">
+        <div class="col-xs-12">
+            <a class="btn btn-default" href="{{ path('personalnovedad_new', {'IdPersonalCargo':id}) }}">Ingresar una novedad</a>
+        </div>
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+        <div class="col-md-12" style="margin-top: 30px;">
+            {{ grid(grid, _self) }}
+            {% block grid_filters %}{% endblock %}
+        </div>
+    </div>
+    <!-- /.row -->
+
+            
+{% endblock %}
