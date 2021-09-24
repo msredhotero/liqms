@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="intranet.security.authentication.provider"
+                class="Liquidaciones\IntranetBundle\Security\Authentication\Provider\IntranetAuthenticationProvider" public="false">
+            <argument /> <!-- User Provider -->
+        </service>
+
+        <service id="intranet.security.authentication.listener"
+                class="Liquidaciones\IntranetBundle\Security\Firewall\IntranetAuthenticationListener" public="false">
+            <argument type="service" id="security.context"/>
+            <argument type="service" id="security.authentication.manager" />
+            <argument />
+            <argument />
+            <argument />
+            <argument />
+            <argument />
+            <argument />
+            <argument />
+            <argument />
+            <argument />
+            <argument />
+            <argument />
+            <argument />
+        </service>
+    </services>
+    <!--
+    <parameters>
+        <parameter key="min_salud_ba_intranet.example.class">Liquidaciones\IntranetBundle\Example</parameter>
+    </parameters>
+
+    <services>
+        <service id="min_salud_ba_intranet.example" class="%min_salud_ba_intranet.example.class%">
+            <argument type="service" id="service_id" />
+            <argument>plain_value</argument>
+            <argument>%parameter_name%</argument>
+        </service>
+    </services>
+    -->
+</container>

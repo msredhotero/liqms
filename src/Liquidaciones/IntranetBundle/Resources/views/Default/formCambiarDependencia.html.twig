@@ -1,0 +1,32 @@
+<div class="modal fade" id="modalCambiarDependencia" tabindex="-1" role="dialog" 
+     aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Cambiar Dependencia</h4>
+            </div>
+            <form action="{{ path('cambiar_dependencia') }}" method="post" {{ form_enctype(form) }}>
+                <div class="modal-body bg-warning">
+                    <p class="text-justify"><strong>Cambiar Dependencia</strong>, 
+                    significa que usted tiene asignado el perfil multidependencia
+                    con el cual puede acceder a datos y funcionalidades de varias dependencias.</p>
+                    <p class="text-justify">A continuación debe elegir la dependencia con la que quiere trabajar.</p>
+                    
+                        {{ form_label(form.dependencia) }}
+                        {{ form_widget(form.dependencia) }}
+
+                </div>
+                <div class="modal-footer bg-warning" style="margin-top:0;">
+                    <button type="submit" class="btn btn-ba">
+                        Cambiar
+                    </button>				
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Cancelar
+                    </button>
+                </div>
+                {{ form_rest(form) }}
+            </form>
+        </div>
+    </div>
+</div>

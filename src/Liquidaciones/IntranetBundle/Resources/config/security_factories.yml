@@ -1,0 +1,5 @@
+services:
+    security.authentication.factory.intranet:
+        class:  Liquidaciones\IntranetBundle\DependencyInjection\Security\Factory\IntranetFactory
+        tags:
+                - { name: security.listener.factory }
