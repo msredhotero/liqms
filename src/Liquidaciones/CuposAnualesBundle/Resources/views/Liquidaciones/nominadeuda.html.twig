@@ -1,0 +1,159 @@
+{% extends '::base.html.twig' %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <!-- some extra scripts -->    
+    <script type="text/javascript">
+        function redireccionar() {
+            var cad = '{{ path('liquidaciones_nomina',{'refCupo':refcupo, 'pagina':paginaActual}) }}';
+            var pos = cad.lastIndexOf('nomina/');
+            var long = cad.length;
+            var nuevaDir = cad.substring(0,pos).concat('nomina/').concat('{{ refcupo }}').concat('/').concat(document.getElementById("selector").value);
+            //alert(nuevaDir);
+            location.href = nuevaDir;
+        }
+    </script>
+    
+{% endblock %}
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Liquidaciones</a></li>
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Cupos</a></li>
+    <li class="active">Nomina de Agentes</li>
+{% endblock %}                
+                
+{% block contenido %}
+<style>
+    .grid-column-cupos_monto {
+        text-align: right;
+    }
+
+</style>
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p><span class="glyphicon glyphicon-alert"></span> 
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+</div>
+{% endif %}    
+    
+{% if app.session.flashbag.has('aviso_ok') %}
+
+<div class="alert alert-success alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+    <p><span class="glyphicon glyphicon-alert"></span> 
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}    
+    {# form_errors(form) #}
+
+</div>
+{% endif %}
+<h5 class="text-right">
+    
+{% if (fechaCierre != '') %}
+<span class="glyphicon glyphicon-time"></span> <span style="color:#C30; font-weight: bold;">Fecha de Cierre: {{ fechaCierre|date('Y-m-d') }}   
+{% endif %}</span>    
+</h5>
+<h3><span class="glyphicon glyphicon-menu-right"></span> Liquidación: {{ guia }}</h3>
+<hr>
+<h4><span class="glyphicon glyphicon-filter"></span> Aplicar Filtros</h4>                         
+
+<div class="row">
+{% if (totalRegistros > 0) %}
+    {{ grid_search(grid) }}
+{% else %}
+    <h4><span class="glyphicon glyphicon-ban-circle" style="color:#C30;"></span> No exiten datos cargados.</h4>
+{% endif %}
+</div>
+
+
+<hr>
+
+<div class="row">
+    
+    <h4><span class="glyphicon glyphicon-search"></span> Resultado de la búsqueda:</h4>
+    <div class="e10"></div>
+    {{grid(grid, _self)}}
+    
+    {% block grid_filters %}{% endblock %}
+    {% block grid_pager_totalcount %}
+         Página
+         {% if (paginaActual == 1) %}
+            <input class="prev" type="button" onclick="location.href = '{{ path('liquidaciones_nomina',{'refCupo':refcupo, 'pagina':paginaActual - 1}) }}'" value="<" disabled="disabled">
+         {% else %}
+            <input class="prev" type="button" onclick="location.href = '{{ path('liquidaciones_nomina',{'refCupo':refcupo, 'pagina':paginaActual - 1}) }}'" value="<">
+         {% endif %}
+            
+            <input class="current" id="selector" type="text" size="2" value="{{ paginaActual }}" onchange="redireccionar()" />
+        {% if (paginaActual == paginasTotales) %}
+            <input class="next" type="button" onclick="location.href = '{{ path('liquidaciones_nomina',{'refCupo':refcupo, 'pagina':paginaActual + 1}) }}'" value=">" disabled="disabled">
+         {% else %}
+            <input class="next" type="button" onclick="location.href = '{{ path('liquidaciones_nomina',{'refCupo':refcupo, 'pagina':paginaActual + 1}) }}'" value=">">
+         {% endif %}
+
+de {{ paginasTotales }}
+<br>
+        {{ 'Resultados: ' ~ totalRegistros ~ ', Monto Total: $' ~ total|number_format(2,',','.') }}
+        
+    {% endblock grid_pager_totalcount %}
+
+</div>
+
+
+<br>
+
+        <ul class="record_actions list-inline" style="margint-top:15px;">
+            
+            <li>
+                <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_cuposliquidacion') }}'">Volver</button>
+            </li>
+            
+            {% if (is_granted('ROLE_1') or is_granted('ROLE_9') or is_granted('ROLE_10') or is_granted('ROLE_11') or is_granted('ROLE_12') or is_granted('ROLE_13') or is_granted('ROLE_14') or is_granted('ROLE_16') or is_granted('ROLE_17')) %}
+            <li>
+                <button type="button" class="btn btn-ba" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_buscarpersona',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-plus-sign"></span>  Agregar</button>
+                <button type="button" class="btn btn-ba" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_newdeuda') }}'"><span class="glyphicon glyphicon-plus-sign"></span>  Agregar Deuda</button>
+            </li>
+            {% endif %}
+            <li>
+                <button type="button" class="btn btn-success" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_exportarExcel',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-save"></span>  Exportar Excel</button>
+            </li>
+            <li>
+                <button type="button" class="btn btn-success" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_exportarPDF',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-save"></span>  Exportar PDF</button>
+            </li>
+            <li>
+                <button type="button" class="btn btn-info" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_exportarExcel',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-save"></span>  Descargar Valor Hora</button>
+            </li>
+        </ul> 
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+       
+        
+        id = $('.row-fluid form').attr("id");
+        
+        $('#'+id).attr("action", "{{ path('liquidaciones_nominabuscar') }}");
+        $('#'+id).prepend("<input type='hidden' name='refCupo' id='refCupo' value='{{ refcupo }}' />");
+        $('#'+id).prepend("<input type='hidden' name='search' id='search' value='"+ id+ "' />");
+    });
+</script>
+{% endblock %}

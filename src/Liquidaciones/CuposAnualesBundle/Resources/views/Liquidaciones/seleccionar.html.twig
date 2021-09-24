@@ -1,0 +1,533 @@
+{% extends '::base.html.twig' %}
+
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Listados de Cupos</a></li>
+    <li><a href="{{ path('liquidaciones_buscarpersona',{'refCupo':cupo}) }}">Busqueda</a></li>
+    <li class="active">Carga</li>
+{% endblock %}
+    
+    
+{% block contenido -%}
+
+    
+<style>
+    .typeahead, .tt-query, .tt-hint {
+    border: 2px solid #CCCCCC;
+    border-radius: 8px;
+    font-size: 24px;
+    height: 45px;
+    line-height: 30px;
+    outline: medium none;
+    padding: 8px 12px;
+    width: 396px;
+    }
+    .typeahead {
+        background-color: #FFFFFF;
+    }
+    .typeahead:focus {
+        border: 2px solid #0097CF;
+    }
+    .tt-query {
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    }
+    .tt-hint {
+        color: #999999;
+    }
+    .tt-dropdown-menu {
+        background-color: #FFFFFF;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        margin-top: 12px;
+        padding: 8px 0;
+        width: 422px;
+    }
+    .tt-suggestion {
+        font-size: 18px;
+        line-height: 24px;
+        padding: 3px 20px;
+    }
+    .tt-suggestion.tt-cursor {
+        background-color: #0097CF;
+        color: #FFFFFF;
+    }
+    .tt-suggestion p {
+        margin: 0;
+    }
+    .gist {
+        font-size: 14px;
+    }
+    #custom-templates .empty-message {
+        padding: 5px 10px;
+        text-align: center;
+    }
+    #multiple-datasets .league-name {
+        border-bottom: 1px solid #CCCCCC;
+        margin: 0 20px 5px;
+        padding: 3px 0;
+    }
+    #scrollable-dropdown-menu .tt-dropdown-menu {
+        max-height: 150px;
+        overflow-y: auto;
+    }
+    #rtl-support .tt-dropdown-menu {
+        text-align: right;
+    }
+
+    
+    form.cupo .error1 ul li {
+        border: 1px solid rgba(0, 0, 0, 0);
+        border-radius: 4px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #F2DEDE;
+        border-color: #EBCCD1;
+        color: #A94442;
+    }
+    .form-horizontal .control-label {
+        text-align: left;
+    }
+    
+    .bs-example {
+        border-color: #E5E5E5 #EEEEEE #EEEEEE;
+        border-style: solid;
+        border-width: 1px 0;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05) inset;
+        margin: 0 -15px 15px;
+        padding: 45px 15px 15px;
+        position: relative;
+    }
+    .bs-example:after {
+        color: #959595;
+        content: "Datos del Agente";
+        font-size: 12px;
+        font-weight: 700;
+        left: 15px;
+        letter-spacing: 1px;
+        position: absolute;
+        text-transform: uppercase;
+        top: 15px;
+    }
+    .bs-example + .highlight {
+        border-radius: 0;
+        border-width: 0 0 1px;
+        margin: 0;
+    }
+    
+    .bs-callout {
+        -moz-border-bottom-colors: none;
+        -moz-border-left-colors: none;
+        -moz-border-right-colors: none;
+        -moz-border-top-colors: none;
+        border-color: #EEEEEE;
+        border-image: none;
+        border-radius: 3px;
+        border-style: solid;
+        border-width: 1px 1px 1px 5px;
+        margin: 20px 0;
+        padding: 20px;
+    }
+
+
+    .bs-callout-info {
+        border-left-color: #F5802D;
+    }
+
+    .letraChica {
+        font-size: 0.8em;
+    }
+    
+    .stepwizard-step p {
+            margin-top: 10px;
+        }
+        .stepwizard-row {
+            display: table-row;
+        }
+        .stepwizard {
+            display: table;
+            width: 50%;
+            position: relative;
+        }
+        .stepwizard-step button[disabled] {
+            opacity: 1 !important;
+            filter: alpha(opacity=100) !important;
+        }
+        .stepwizard-row:before {
+            top: 14px;
+            bottom: 0;
+            position: absolute;
+            content: " ";
+            width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            z-order: 0;
+        }
+        .stepwizard-step {
+            display: table-cell;
+            text-align: center;
+            position: relative;
+        }
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+        }
+        
+    @media (min-width: 768px) {
+        .bs-example {
+            background-color: #FFFFFF;
+            border-color: #DDDDDD;
+            border-radius: 4px 4px 0 0;
+            border-width: 1px;
+            box-shadow: none;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        .bs-example + .highlight {
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+            border-width: 1px;
+            margin-left: 0;
+            margin-right: 0;
+            margin-top: -16px;
+        }
+    }
+</style>
+
+    
+    
+  
+{% if (idcuenta != 24) %}
+    
+    
+    <h1><span class="glyphicon glyphicon-plus-sign"></span> Carga de Liquidaciones al Personal</h1>
+    <h3><span class="glyphicon glyphicon-menu-right"></span> Liquidación: {{ guia|raw }}</h3>
+    <hr>
+     <div class="stepwizard col-md-offset-2">
+    <div class="stepwizard-row setup-panel">
+      <div class="stepwizard-step">
+        <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+        <p>Buscar Agente</p>
+      </div>
+      <div class="stepwizard-step">
+        <a href="#step-2" type="button" class="btn btn-ba btn-circle">2</a>
+        <p>Seleccionar Agente</p>
+      </div>
+      <div class="stepwizard-step">
+        <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+        <p>Carga de Horas</p>
+      </div>
+
+    </div>
+</div> 
+{% else %}
+ <div class="stepwizard col-md-offset-2">
+    <div class="stepwizard-row setup-panel">
+    {% if (modocarga == 'rg') %}
+      <div class="stepwizard-step">
+        <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+        <p>Seleccionar Fecha Novedad</p>
+      </div>
+      <div class="stepwizard-step">
+        <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+        <p>Buscar Agente</p>
+      </div>
+      <div class="stepwizard-step">
+        <a href="#step-3" type="button" class="btn btn-ba btn-circle">3</a>
+        <p>Seleccionar Agente</p>
+      </div>
+      <div class="stepwizard-step">
+        <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+        <p>Carga de Horas</p>
+      </div> 
+
+      {% else %}
+      <div class="stepwizard-step">
+        <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+        <p>Buscar Agente</p>
+      </div>
+      <div class="stepwizard-step">
+        <a href="#step-2" type="button" class="btn btn-ba btn-circle">2</a>
+        <p>Seleccionar Agente</p>
+      </div>
+      <div class="stepwizard-step">
+        <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+        <p>Carga de Horas</p>
+      </div>
+    {% endif %} 
+    </div>
+</div>
+
+  <div align="center">
+        <h4>
+            Fecha de la Novedad: {{ fechanovedad }}
+        </h4>
+     </div> 
+    
+{% endif %}
+
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p><span class="glyphicon glyphicon-alert"></span> 
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    {# form_errors(form) #}
+
+</div>
+{% endif %}
+
+
+{% if app.session.flashbag.has('aviso_ok') %}
+
+<div class="alert alert-success alert-dismissable" role="alert">
+      
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+    <p><span class="glyphicon glyphicon-ok"></span>
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    {# form_errors(edit_form) #}
+
+</div>
+{% endif %}
+    
+    
+    
+    
+
+<form class="cupo form-inline" action="{{ path('cupos_create') }}" method="post">
+    
+
+
+
+    <table class="table table-responsive table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Legajo
+                </th>
+                <th>
+                    Apellido y Nombre
+                </th>
+                <th>
+                    Nº de Documento
+                </th>
+                <th>
+                    Régimen Estatutario
+                </th>
+                <th>
+                    Agrupamiento
+                </th>
+                <th>
+                    Planta
+                </th>
+                <th>
+                    Externo
+                </th>
+
+               
+                <th>
+                    Acciones
+                </th>
+            </tr>
+        </thead>
+        
+                                
+        <tbody class="resultados">
+            {% set encasillamientos = ["ABOGADO","INGENIERO"] %}
+            {% if (resultados == null) %}
+            <tr>
+                <td colspan="5">
+                    No se han encontrado datos en la busqueda, por favor intente nuevamente.
+                </td> 
+            </tr>
+            {% endif %}
+            {% for dato in resultados %}
+                {% set seleccionable = dato.validacion|slice(0) %}
+            <tr class="fila" id="{{ dato.RefPersonalCargo }}">
+                <td>
+                    {{ dato.Legajo }}
+                </td>
+                <td>
+                    {{ dato.apyn }}
+                </td>
+                <td>
+                    {{ dato.nrodocumento }}
+                </td>
+                <td>
+                    {{ dato.RegimenEstatutario }}
+                </td>
+                <td>
+                    {{ dato.Agrupamiento }}
+                </td>
+                <td>
+                    {{ dato.planta }}
+                </td>
+                <td>
+                    {% if (dato.EsExterno == 1) %}
+                        Si
+                    {% else %}
+                        No
+                    {% endif %}
+                    
+                </td>
+                
+                
+                <td>
+                   {% if ((idcuenta == 24) or (idcuenta == 25)) %}
+                        {% if (seleccionable == 1) %}
+                            <a href="{{ path('liquidaciones_newdeuda',{'persona':dato.RefPersonalCargo}) }}">Seleccionar</a>
+                        {% else %}
+                            {{ dato.validacion|slice(2, dato.validacion|length - 2)|raw  }}
+                        {% endif %}
+                    {% else %}
+                        
+                        {% if (seleccionable == 1) %}
+                            {% if (modocarga == 'rg') %}
+                                {% if (reemplazo == 1) %}
+                                    <a href="{{ path('liquidaciones_new',{'persona':persona,'personarg':dato.RefPersonalCargo,'fechaguardia':fechanovedad}) }}">Seleccionar</a>
+                                {% else %}
+                                    <a href="{{ path('liquidaciones_new',{'persona':dato.RefPersonalCargo,'personarg':0,'fechaguardia':fechanovedad}) }}">Seleccionar</a>
+                                {% endif %}
+                            {% endif %}
+                                
+                            {% if (vista != 'newhsinvestigacion') %}
+                              
+                                    
+                                {% if (modocarga == 'horas') %}
+                                    <a href="{{ path('liquidaciones_newhs',{'persona':dato.RefPersonalCargo}) }}">Seleccionar</a>
+                                {% endif %}
+                                    
+                                {% if (modocarga == 'monto') %}
+                                    <a href="{{ path('liquidaciones_newmonto',{'persona':dato.RefPersonalCargo}) }}">Seleccionar</a>
+                                {% endif %}    
+                            {% else %}    
+                                <a href="{{ path('liquidaciones_newhsinvestigacion',{'persona':dato.RefPersonalCargo}) }}">Seleccionar</a>
+                            {% endif %}
+                               
+                        {% else %}
+                            {{ dato.validacion|slice(2, dato.validacion|length - 2)|raw  }}
+                        {% endif %}
+                    
+                    {% endif %} 
+                </td>
+                
+            </tr>
+            <tr>
+                <div class="row infoPersona" style="display: none;" id="persona{{ dato.RefPersonalCargo }}">
+                    <div class="bs-callout bs-callout-info">
+                        <button type="button" class="close">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4>
+                            Datos del Agente
+                        </h4>
+                        <p>
+                            Agrupamiento: <span id="agrupamiento"><b>{{ dato.Agrupamiento }}</b></span>
+                        </p>
+                        <p>
+                            Dependencia de Nombramiento: <span id="depenom"><b>{{ dato.DepeNom|raw }}</b></span>
+                        </p>
+                        <p>
+                            Dependencia de Pago: <span id="depepago"><b>{{ dato.DepePago|raw }}</b></span>
+                        </p>
+                        <p>
+                            Fecha Baja Preventiva: <span id="fechabaja"><b>{{ dato.FechaBajaPreventiva }}</b></span>
+                        </p>
+                        <p>
+                            Categoria: <span id="fechabaja"><b>{{ dato.Categoria }}</b></span>
+                        </p>
+                    </div>
+                    
+                </div>
+            </tr>
+            {% endfor %}
+            
+            
+        </tbody>
+
+    </table>
+    
+
+    
+
+
+        {% if ((idcuenta == 24) or (idcuenta == 25)) %}
+        <input type="hidden" id="fechanovedad" name="fechanovedad" value="{{ fechanovedad }}"/>
+        {% endif %}
+        <input type="hidden" name="cantCuentas" id="cantCuentas" value="1">
+        <input type="hidden" name="lstCuentasAgregadas" id="lstCuentasAgregadas" value="">
+</form>
+        <div class="form-group col-md-12" style="text-align: left;">
+        <ul class="list-inline" style="margin-top:10px;">
+
+                <li>
+                    {% if (reemplazo == 0) %}
+                    	{% if (modocarga == 'rg') %}
+                        idcuenta
+                                {% if (idcuenta == 24) %}
+                                <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_fechanovedaddeuda',{'refCupo':cupo}) }}'">Volver</button>
+                                {% else %}
+                                <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_fechanovedad',{'refCupo':cupo}) }}'">Volver</button>
+                                {% endif %}
+                        {% else %}
+                        <form class="cupo form-inline" action="{{ path('liquidaciones_buscarpersona') }}" method="post">
+                        <button type="submit" class="btn btn-default" style="margin-left:0px;" >Volver</button>
+                        <input type="hidden" id="refcupo" name="refcupo" value="{{ cupo }}"/>
+                        <input type="hidden" id="liquidaciones_cuposanualesbundle_liquidaciones_rGFecha" name="liquidaciones_cuposanualesbundle_liquidaciones_rGFecha" value=""/>
+                        </form>
+                        {% endif %}
+                    {% else %}
+                    <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_new',{'persona':persona, 'personarg':0,'fechaguardia':fechanovedad}) }}'">Volver</button>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+
+
+    
+<script type="text/javascript">
+    $(document).ready(function(){
+        
+        
+        $('.close').click(function(){
+            $('.infoPersona').hide('slow'); 
+        });
+        
+        $('.fila').click(function() {
+           $('.infoPersona').hide('slow'); 
+           usersid =  $(this).attr("id");
+           $('#persona'+usersid).show(300);
+        });
+        
+        $('.bs-callout').click(function() {
+           usersid =  $(this).attr("id");
+           $('#persona'+usersid).hide(300);
+        });
+    });
+</script>
+
+
+{% endblock %}

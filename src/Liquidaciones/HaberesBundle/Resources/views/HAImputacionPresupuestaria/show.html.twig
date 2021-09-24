@@ -1,0 +1,144 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>HAImputacionPresupuestaria</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Idjurisdiccionpresupuestaria</th>
+                <td>{{ entity.idJurisdiccionPresupuestaria }}</td>
+            </tr>
+            <tr>
+                <th>Dependenciapresupuestaria</th>
+                <td>{{ entity.dependenciaPresupuestaria }}</td>
+            </tr>
+            <tr>
+                <th>Principalsubprinc</th>
+                <td>{{ entity.principalSubPrinc }}</td>
+            </tr>
+            <tr>
+                <th>Regimenestatutario</th>
+                <td>{{ entity.regimenEstatutario }}</td>
+            </tr>
+            <tr>
+                <th>Agrupamiento</th>
+                <td>{{ entity.agrupamiento }}</td>
+            </tr>
+            <tr>
+                <th>Descripcion</th>
+                <td>{{ entity.descripcion }}</td>
+            </tr>
+            <tr>
+                <th>Programadescripcion</th>
+                <td>{{ entity.programaDescripcion }}</td>
+            </tr>
+            <tr>
+                <th>Ace</th>
+                <td>{{ entity.ace }}</td>
+            </tr>
+            <tr>
+                <th>Aco</th>
+                <td>{{ entity.aco }}</td>
+            </tr>
+            <tr>
+                <th>Pan</th>
+                <td>{{ entity.pan }}</td>
+            </tr>
+            <tr>
+                <th>Programa</th>
+                <td>{{ entity.programa }}</td>
+            </tr>
+            <tr>
+                <th>Subprograma</th>
+                <td>{{ entity.subPrograma }}</td>
+            </tr>
+            <tr>
+                <th>Proyecto</th>
+                <td>{{ entity.proyecto }}</td>
+            </tr>
+            <tr>
+                <th>Grupo</th>
+                <td>{{ entity.grupo }}</td>
+            </tr>
+            <tr>
+                <th>Aes</th>
+                <td>{{ entity.aES }}</td>
+            </tr>
+            <tr>
+                <th>Subgrupo</th>
+                <td>{{ entity.subGrupo }}</td>
+            </tr>
+            <tr>
+                <th>Obra</th>
+                <td>{{ entity.obra }}</td>
+            </tr>
+            <tr>
+                <th>Ubicaciongeografica</th>
+                <td>{{ entity.ubicacionGeografica }}</td>
+            </tr>
+            <tr>
+                <th>Finalidad</th>
+                <td>{{ entity.finalidad }}</td>
+            </tr>
+            <tr>
+                <th>Funcion</th>
+                <td>{{ entity.funcion }}</td>
+            </tr>
+            <tr>
+                <th>Subfuncion</th>
+                <td>{{ entity.subFuncion }}</td>
+            </tr>
+            <tr>
+                <th>Procedencia</th>
+                <td>{{ entity.procedencia }}</td>
+            </tr>
+            <tr>
+                <th>Principal</th>
+                <td>{{ entity.principal }}</td>
+            </tr>
+            <tr>
+                <th>Subprincipal</th>
+                <td>{{ entity.subPrincipal }}</td>
+            </tr>
+            <tr>
+                <th>Parcial</th>
+                <td>{{ entity.parcial }}</td>
+            </tr>
+            <tr>
+                <th>Subparcial</th>
+                <td>{{ entity.subParcial }}</td>
+            </tr>
+            <tr>
+                <th>Activa</th>
+                <td>{{ entity.activa }}</td>
+            </tr>
+            <tr>
+                <th>Cargos</th>
+                <td>{{ entity.cargos }}</td>
+            </tr>
+            <tr>
+                <th>Credito</th>
+                <td>{{ entity.credito }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('haimputacionpresupuestaria') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('haimputacionpresupuestaria_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

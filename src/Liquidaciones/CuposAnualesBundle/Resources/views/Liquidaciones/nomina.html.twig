@@ -1,0 +1,215 @@
+{% extends '::base.html.twig' %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <!-- some extra scripts -->    
+    <script type="text/javascript">
+        function redireccionar() {
+            var cad = '{{ path('liquidaciones_nomina',{'refCupo':refcupo, 'pagina':paginaActual}) }}';
+            var pos = cad.lastIndexOf('nomina/');
+            var long = cad.length;
+            var nuevaDir = cad.substring(0,pos).concat('nomina/').concat('{{ refcupo }}').concat('/').concat(document.getElementById("selector").value);
+            //alert(nuevaDir);
+            location.href = nuevaDir;
+        }
+    </script>
+    
+{% endblock %}
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Liquidaciones</a></li>
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Cupos</a></li>
+    <li class="active">Nomina de Agentes</li>
+{% endblock %}                
+                
+{% block contenido %}
+<style>
+    .grid-column-cupos_monto {
+        text-align: right;
+    }
+
+</style>
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p><span class="glyphicon glyphicon-alert"></span> 
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+</div>
+{% endif %}    
+    
+{% if app.session.flashbag.has('aviso_ok') %}
+
+<div class="alert alert-success alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+    <p><span class="glyphicon glyphicon-alert"></span> 
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}    
+    {# form_errors(form) #}
+
+</div>
+{% endif %}
+<h5 class="text-right">
+    
+{% if (fechaCierre != '') %}
+<span class="glyphicon glyphicon-time"></span> <span style="color:#C30; font-weight: bold;">Fecha de Cierre: {{ fechaCierre|date('Y-m-d') }}   
+{% endif %}</span>    
+</h5>
+<h3><span class="glyphicon glyphicon-menu-right"></span> Liquidación: {{ guia|raw }} - <span style="color:#008200;"> Disponible: ${{ (MontoCupo - total)|number_format(2, ',', '.') }}</span></h3>
+<hr>
+{% if (vacantes > 0) %}
+<h4 style="color: #17A542;">Vacantes Autorizadas: {{ vacantesTotales / 5 }}</h4>
+
+<hr>
+{% endif %}
+
+<h4><span class="glyphicon glyphicon-filter"></span> <a data-toggle="collapse" href="#collapse2" style="color:#000;">Aplicar Filtros</a></h4>                         
+
+<div class="row">
+    <div id="collapse2" class="panel-collapse collapse">
+{% if (totalRegistros > 0) %}
+    {{ grid_search(grid) }}
+{% else %}
+    <h4><span class="glyphicon glyphicon-ban-circle" style="color:#C30;"></span> No exiten datos cargados.</h4>
+{% endif %}
+    </div>
+</div>
+
+
+<hr>
+
+<div class="row">
+    <div class="alert alert-info">
+        <strong><span class="glyphicon glyphicon-info-sign"></span></strong> Cuando termine de cargar a todos los agentes por favor presione el boton "Finalizar" para dar un cierre a la carga.
+    </div>
+    <div class="alert alert-warning">
+        <strong><span class="glyphicon glyphicon-info-sign"></span></strong> Por motivo de emergencia sanitaria. La entrega de la documentación firmada respaldatoria deberá ser a través de este mismo sistema. Haciendo clic en el botón <b>"Subir Archivo Firmado"</b>.
+    </div>
+</div>
+<div class="row">
+    
+    <h4><span class="glyphicon glyphicon-search"></span> Resultado de la búsqueda:</h4>
+    <ul class="record_actions list-inline" style="margint-top:15px;">
+
+        {% if (is_granted('ROLE_1') or is_granted('ROLE_9') or is_granted('ROLE_10') or is_granted('ROLE_11') or is_granted('ROLE_12') or is_granted('ROLE_13') or is_granted('ROLE_14') or is_granted('ROLE_16') or is_granted('ROLE_17') or is_granted('ROLE_20')) %}
+        <li>
+            {% if ((idCuenta == 24) or (idCuenta == 25)) %}
+            <button type="button" class="btn btn-ba" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_fechanovedaddeuda',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-plus-sign"></span>  Agregar</button>
+            {% else %}
+                {% if (modocarga == 'rg') %}
+                    <button type="button" class="btn btn-ba" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_fechanovedad',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-plus-sign"></span>  Agregar</button>
+                {% else %}
+                    <form class="cupo form-inline" action="{{ path('liquidaciones_buscarpersona') }}" method="post">
+                    <button type="submit" class="btn btn-ba" style="margin-left:0px;" ><span class="glyphicon glyphicon-plus-sign"></span>  Agregar</button>
+                    <input type="hidden" id="refcupo" name="refcupo" value="{{ refcupo }}"/>
+                    <input type="hidden" id="liquidaciones_cuposanualesbundle_liquidaciones_rGFecha" name="liquidaciones_cuposanualesbundle_liquidaciones_rGFecha" value=""/>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </li>
+        {% endif %}
+        <li>
+            <button type="button" class="btn btn-success" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_exportarExcel',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-save"></span>  Exportar Excel</button>
+        </li>
+        <li>
+            <button type="button" class="btn btn-success" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_exportarPDF',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-save"></span>  Exportar PDF</button>
+        </li>
+        <li>
+            <button type="button" class="btn btn-primary" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_subirarchivo',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-cloud-upload"></span>  Subir Archivo Firmado</button>
+        </li>
+        <li>
+            <button type="button" class="btn btn-warning" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_finalizarestado',{'refcupo':refcupo}) }}'"><span class="glyphicon glyphicon-check"></span>  Finalizar</button>
+        </li>
+
+    </ul>
+    <div class="e10"></div>
+    {{grid(grid, _self)}}
+    
+    {% block grid_filters %}{% endblock %}
+    {% block grid_pager_totalcount %}
+         Página
+         {% if (paginaActual == 1) %}
+            <input class="prev" type="button" onclick="location.href = '{{ path('liquidaciones_nomina',{'refCupo':refcupo, 'pagina':paginaActual - 1}) }}'" value="<" disabled="disabled">
+         {% else %}
+            <input class="prev" type="button" onclick="location.href = '{{ path('liquidaciones_nomina',{'refCupo':refcupo, 'pagina':paginaActual - 1}) }}'" value="<">
+         {% endif %}
+            
+            <input class="current" id="selector" type="text" size="2" value="{{ paginaActual }}" onchange="redireccionar()" />
+        {% if (paginaActual == paginasTotales) %}
+            <input class="next" type="button" onclick="location.href = '{{ path('liquidaciones_nomina',{'refCupo':refcupo, 'pagina':paginaActual + 1}) }}'" value=">" disabled="disabled">
+         {% else %}
+            <input class="next" type="button" onclick="location.href = '{{ path('liquidaciones_nomina',{'refCupo':refcupo, 'pagina':paginaActual + 1}) }}'" value=">">
+         {% endif %}
+
+de {{ paginasTotales }}
+<br>
+        {{ 'Resultados: ' ~ totalRegistros ~ ', Monto Total: $' ~ total|number_format(2,',','.') }}
+        
+    {% endblock grid_pager_totalcount %}
+
+</div>
+
+
+<br>
+
+        <ul class="record_actions list-inline" style="margint-top:15px;">
+            
+            <li>
+                <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_cuposliquidacion') }}'">Volver</button>
+            </li>
+
+        </ul> 
+
+<div class="modal fade" id="myModal3" tabindex="1" style="z-index:500000;" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form class="form-inline formulario" role="form">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Eliminar Montos del Agente</h4>
+      </div>
+      <div class="modal-body">
+        * Solo se borraran los montos cargados para esta liquidación
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="eliminarMonto">Eliminar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+       
+        
+        id = $('.row-fluid form').attr("id");
+        
+        $('#'+id).attr("action", "{{ path('liquidaciones_nominabuscar') }}");
+        $('#'+id).prepend("<input type='hidden' name='refCupo' id='refCupo' value='{{ refcupo }}' />");
+        $('#'+id).prepend("<input type='hidden' name='search' id='search' value='"+ id+ "' />");
+        
+        
+    });
+</script>
+{% endblock %}

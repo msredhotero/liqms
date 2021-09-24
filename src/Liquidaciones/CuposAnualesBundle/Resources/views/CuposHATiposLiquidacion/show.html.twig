@@ -1,0 +1,44 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>CuposHATiposLiquidacion</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Refcuenta</th>
+                <td>{{ entity.refCuenta }}</td>
+            </tr>
+            <tr>
+                <th>Idimputacionpresupuestaria</th>
+                <td>{{ entity.idImputacionPresupuestaria }}</td>
+            </tr>
+            <tr>
+                <th>Adicional</th>
+                <td>{{ entity.adicional }}</td>
+            </tr>
+            <tr>
+                <th>Refcupo</th>
+                <td>{{ entity.refCupo }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('cuposhatiposliquidacion') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('cuposhatiposliquidacion_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

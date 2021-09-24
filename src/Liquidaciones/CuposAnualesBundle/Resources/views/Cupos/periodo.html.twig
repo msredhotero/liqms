@@ -1,0 +1,91 @@
+{% extends '::base.html.twig' %}
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('cupos') }}">Cupos Mensuales</a></li>
+    <li class="active">Periodos</li>
+{% endblock %}
+    
+{% block contenido -%} 
+
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p><span class="glyphicon glyphicon-alert"></span> 
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+   
+
+</div>
+{% endif %}
+    
+    
+  <div class="row">
+      <div class="col-md-12" align="left">
+          <h2>Seleccione el Cupo Anual {{ "now"|date('Y') }}</h2>
+      </div>
+      <div class="col-md-8 alert alert-info" align="left">
+          <p>Seleccione el Cupo Anual Anterior</p>
+          {% if ("now"|date_modify("-1 month")|date("m") == 12) %}
+                    <select class="form-control" id="cupoanualanterior" name="cupoanualanterior">
+                        <option value="0">-------------</option>
+                        {% for ca in entitiesanterior %}
+                            <option value="{{ ca.ID }}">
+                                {{ ca.DESCRIPCION|raw }}
+                            </option>
+                        {% endfor %}
+                    </select>
+              {% endif %}
+      </div>
+      <div class="col-md-12" align="left">
+          <table class="table table-striped">
+              <thead>
+                <th>Cupo Anuales</th>
+                <th>Acción</th>
+              </thead>
+          {% for entityca in entitiesca %}
+              <tr>
+              <td>
+                  {{ entityca.Descripcion|raw }}
+              </td>
+              
+              <td id="dir">
+                  <a href="{{ path('cupos_periododetalles', { 'cupoanual': entityca.ID, 'cupoanualanterior':0 }) }}">Seleccionar</a>
+              </td>
+              </tr>
+          {% endfor %}
+          </table>
+      </div>
+      <br>
+  </div>
+  
+
+  <div class="row">
+      <ul class="list-inline">
+          <li>
+              <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('cupos') }}'">Volver</button>
+          </li>
+      </ul>
+  </div>
+
+<script type="text/javascript">
+    $(document).ready(function(){  
+        $('#cupoanualanterior').change(function(){
+            var str = "";
+            $('#dir a').each(function() {
+                str = $(this).attr('href');
+                $(this).attr('href',str.substr(0,str.length-2)+'/'+$('#cupoanualanterior').val());
+            });
+            
+        });
+    });
+</script>
+{% endblock %}

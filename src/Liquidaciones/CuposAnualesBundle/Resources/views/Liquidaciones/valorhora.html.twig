@@ -1,0 +1,374 @@
+{% extends '::base.html.twig' %}
+
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Listados de Cupos</a></li>
+    <li class="active">Valor Hora</li>
+{% endblock %}
+    
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link type="text/css" rel="stylesheet"
+        href="{{ asset('css/datepicker3.css') }}" />
+
+
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script type="text/javascript" 
+        src="{{ asset('js/bootstrap-datepicker.js') }}">
+    </script>
+    
+    <script type="text/javascript" 
+        src="{{ asset('js/locales/bootstrap-datepicker.es.js') }}">
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            $('#divMiCalendario').datepicker({
+                format: "dd-mm-yyyy",
+                todayBtn: false,
+                language: "es",
+                autoclose: true,
+                todayHighlight: true
+            });
+
+        });
+    </script>
+
+{% endblock %}
+    
+{% block contenido -%}
+
+<style>
+    .typeahead, .tt-query, .tt-hint {
+    border: 2px solid #CCCCCC;
+    border-radius: 8px;
+    font-size: 24px;
+    height: 45px;
+    line-height: 30px;
+    outline: medium none;
+    padding: 8px 12px;
+    width: 396px;
+    }
+    .typeahead {
+        background-color: #FFFFFF;
+    }
+    .typeahead:focus {
+        border: 2px solid #0097CF;
+    }
+    .tt-query {
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    }
+    .tt-hint {
+        color: #999999;
+    }
+    .tt-dropdown-menu {
+        background-color: #FFFFFF;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        margin-top: 12px;
+        padding: 8px 0;
+        width: 422px;
+    }
+    .tt-suggestion {
+        font-size: 18px;
+        line-height: 24px;
+        padding: 3px 20px;
+    }
+    .tt-suggestion.tt-cursor {
+        background-color: #0097CF;
+        color: #FFFFFF;
+    }
+    .tt-suggestion p {
+        margin: 0;
+    }
+    .gist {
+        font-size: 14px;
+    }
+    #custom-templates .empty-message {
+        padding: 5px 10px;
+        text-align: center;
+    }
+    #multiple-datasets .league-name {
+        border-bottom: 1px solid #CCCCCC;
+        margin: 0 20px 5px;
+        padding: 3px 0;
+    }
+    #scrollable-dropdown-menu .tt-dropdown-menu {
+        max-height: 150px;
+        overflow-y: auto;
+    }
+    #rtl-support .tt-dropdown-menu {
+        text-align: right;
+    }
+
+    
+    form.cupo .error1 ul li {
+        border: 1px solid rgba(0, 0, 0, 0);
+        border-radius: 4px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #F2DEDE;
+        border-color: #EBCCD1;
+        color: #A94442;
+    }
+    .form-horizontal .control-label {
+        text-align: left;
+    }
+    
+    .bs-example {
+        border-color: #E5E5E5 #EEEEEE #EEEEEE;
+        border-style: solid;
+        border-width: 1px 0;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05) inset;
+        margin: 15px 15px;
+        padding: 45px 15px 15px;
+        position: relative;
+    }
+    .bs-example:after {
+        color: #959595;
+        content: "Guardias Cargadas";
+        font-size: 12px;
+        font-weight: 700;
+        left: 15px;
+        letter-spacing: 1px;
+        position: absolute;
+        text-transform: uppercase;
+        top: 15px;
+    }
+    .bs-example + .highlight {
+        border-radius: 0;
+        border-width: 0 0 1px;
+        margin: 0;
+    }
+    
+    .bs-callout {
+        -moz-border-bottom-colors: none;
+        -moz-border-left-colors: none;
+        -moz-border-right-colors: none;
+        -moz-border-top-colors: none;
+        border-color: #EEEEEE;
+        border-image: none;
+        border-radius: 3px;
+        border-style: solid;
+        border-width: 1px 1px 1px 5px;
+        margin: 20px 0;
+        padding: 20px;
+    }
+
+
+    .bs-callout-info {
+        border-left-color: #F5802D;
+    }
+    
+    .bs-callout-reemplazo {
+        border-left-color: #0404B4;
+    }
+
+    .letraChica {
+        font-size: 0.8em;
+    }
+    @media (min-width: 768px) {
+        .bs-example {
+            background-color: #FFFFFF;
+            border-color: #DDDDDD;
+            border-radius: 4px 4px 0 0;
+            border-width: 1px;
+            box-shadow: none;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        .bs-example + .highlight {
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+            border-width: 1px;
+            margin-left: 0;
+            margin-right: 0;
+            margin-top: -16px;
+        }
+        
+        .list-group-item.active {
+            z-index: 2;
+            color: #FFF;
+            background-color: #0275D8;
+            border-color: #0275D8;
+        }
+        
+        .stepwizard-step p {
+            margin-top: 10px;
+        }
+        .stepwizard-row {
+            display: table-row;
+        }
+        .stepwizard {
+            display: table;
+            width: 50%;
+            position: relative;
+        }
+        .stepwizard-step button[disabled] {
+            opacity: 1 !important;
+            filter: alpha(opacity=100) !important;
+        }
+        .stepwizard-row:before {
+            top: 14px;
+            bottom: 0;
+            position: absolute;
+            content: " ";
+            width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            z-order: 0;
+        }
+        .stepwizard-step {
+            display: table-cell;
+            text-align: center;
+            position: relative;
+        }
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+        }
+    }
+</style>
+
+
+<form class="cupo form-inline">
+    
+    <div class="row" align="center">                            
+        <h3>Valor Hora</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-5">
+                    <label class="label-control">Tipo de Busqueda</label>
+                    <div class="input-group col-md-12">
+                        <select class="form-control" id="filtro" name="filtro">
+                            <option value="1">Todos por Dependencia</option>
+                            <option value="2">Legajo</option>
+                            <option value="3">Nro Documento</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <label class="label-control">Busqueda</label>
+                    <div class="input-group col-md-12">
+                        <input class="form-control" type="number" id="busqueda" name="busqueda" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="label-control">Acciones</label>
+                    <div class="input-group col-md-12">
+                        <button type="button" name="buscar" id="buscar" class="btn btn-ba">Buscar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:15px;">
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-8" id="rstValorHora">
+            
+        </div>
+        <div class="col-md-2">
+            
+        </div>
+
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-8" id="dscargas">
+            <button type="button" class="btn btn-success" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_exportarExcelValorHora') }}'"><span class="glyphicon glyphicon-save"></span>  Exportar Excel</button>
+        </div>
+        <div class="col-md-2">
+            
+        </div>
+    </div>
+
+
+</form>   
+    
+
+    <script>
+    $(function() {
+
+        $('#buscar').click(function() {
+            if ($('#busqueda').val() == '') {
+                traerValorHora($('#filtro').val(), 0);
+            } else {
+                traerValorHora($('#filtro').val(), $('#busqueda').val());
+            }
+            
+        });
+
+        function traerValorHora(tipobusqueda,busqueda) {
+             var direAccion  = '{{ path('liquidaciones_traerValorHora', { 'tipobusqueda': 'tipobusqueda', 'busqueda': 'busqueda'}) }}';
+                 /*"../traerImputacion/"+depe+"/"+cuenta+"/"+tipo;*/
+                direAccion = direAccion.replace("tipobusqueda", tipobusqueda);
+                direAccion = direAccion.replace("busqueda", busqueda); 
+
+                 var getParams = {tipobusqueda: 1, busqueda: 671306};
+                 $.get(direAccion,
+                   function(data){
+                       
+                       
+                       if (data != '') {
+                       
+                            var cant=data.length; //aca capturamos el tamaño del arreglo devuelto.
+                            var cadenaValor = '<table class="table table-striped"> \
+                                                <thead> \
+                                                    <tr> \
+                                                        <th>Legajo</th> \
+                                                        <th>Apellido</th> \
+                                                        <th>Nombre</th> \
+                                                        <th>Nro Documento</th> \
+                                                        <th>Valor Hora</th> \
+                                                    </tr> \
+                                                </thead> \
+                                                <tbody>';
+
+                           for (var i=0;i<cant;++i) {
+
+                               cadenaValor += "<tr><td>" + data[i].legajo + "</td><td>" + data[i].apellido + "</td><td>" + data[i].nombre + "</td><td>" + data[i].nrodocumento + "</td><td>" + data[i].valorhora + "</td></tr>";
+
+                           }
+
+                           cadenaValor += "</tbody></table>";
+
+                           $('#rstValorHora').html(cadenaValor);
+                       } else {
+
+                            $('#rstValorHora').html('No existen datos');
+                           
+                       }
+                   }, "json");
+         }
+    });
+    </script>
+
+
+{% endblock %}
+

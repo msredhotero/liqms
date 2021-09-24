@@ -1,0 +1,189 @@
+{% extends '::base.html.twig' %}
+
+
+{% block guia %}
+    {{ parent() }}     
+    <li><a href="{{ path('vacantes') }}">Vacantes</a></li>
+    <li class="active">Consulta</li>
+{% endblock %}                
+                
+{% block contenido %}
+    <style>
+    tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+    
+    #example_paginate {
+        margin-top: 15px;
+    }
+    </style>
+<!--<h4><span class="glyphicon glyphicon-filter"></span> Aplicar Filtros</h4>                         -->
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p>
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    
+
+</div>
+{% endif %}
+    
+    
+{% if app.session.flashbag.has('aviso_ok') %}
+
+
+    <div class="alert alert-success alert-dismissable" role="alert">
+
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+
+    {% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+        <p><span class="glyphicon glyphicon-ok"></span> 
+            {{ flahMessage }}
+        </p>
+
+    {% endfor %}
+       
+
+    </div>
+
+{% endif %}
+
+<div class="row">
+    <h3><span class="glyphicon glyphicon-list"></span> Listado de Vancantes Mensuales - Consulta</h3>
+    <h4><span class="glyphicon glyphicon-search"></span> Resultado de la búsqueda:</h4>
+    <button type="button" class="btn btn-ba" style="margin-left:0px;" onClick="location.href = '{{ path('vacantes_new') }}'">Nuevo</button>
+    <div class="e10"></div>
+    
+    {#grid(grid, _self)#}
+    {# block grid_filters #}{# endblock #}
+    <table class="table table-striped table-responsive table-bordered" id="example">
+        <thead>
+            <tr>
+                <th>Año</th>
+                <th>Mes</th>
+                <th>Dependencia</th>
+                <th>Vacantes</th>
+                <th>Liquidación</th>
+                <th style="width: 150px;">Acciones</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Año</th>
+                <th>Mes</th>
+                <th>Dependencia</th>
+                <th>Vacantes</th>
+                <th>Liquidación</th>
+                <th>Acciones</th>
+            </tr>
+        </tfoot>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td style="text-align: center;">{{ entity.anio }}</td>
+                <td style="text-align: center;">{{ entity.mes }}</td>
+                <td>{{ entity.codigo|raw }}</td>
+                <td>{{ entity.vacantes|number_format(2) }}</td>
+                <td>{{ entity.cuenta|raw }}</td>
+                <td style="width: 120px;">
+                <div class="btn-group">
+                        <button class="btn btn-default" type="button">Acciones</button>
+
+                        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+
+                        <ul class="dropdown-menu" role="menu">
+                                
+                            <li>
+                                <a href="{{ path('vacantes_show', { 'id': entity.id }) }}" class="lista" id="lista">Ver</a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a href="{{ path('vacantes_edit', { 'id': entity.id }) }}" class="modificar" id="modificar">Modificar</a>
+                            </li>
+                            
+                            
+
+                            
+                        </ul>
+                    </div>    
+
+                    </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="{{ asset('js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
+<script>
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    $('#example tfoot th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
+    } );
+ 
+    // DataTable
+    var table = $('#example').DataTable({
+                "order": [[ 0, "desc" ],[ 1, "desc" ]],
+		"language": {
+			"emptyTable":     "No hay datos cargados",
+			"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
+			"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
+			"infoFiltered":   "(filtrados del total de _MAX_ filas)",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"lengthMenu":     "Mostrar _MENU_ filas",
+			"loadingRecords": "Cargando...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"zeroRecords":    "No se encontraron resultados",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Ultimo",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": activate to sort column ascending",
+				"sortDescending": ": activate to sort column descending"
+			}
+		  }
+	} );
+ 
+    // Apply the search
+    table.columns().every( function () {
+        var that = this;
+ 
+        $( 'input', this.footer() ).on( 'keyup change', function () {
+            if ( that.search() !== this.value ) {
+                that
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+} );
+</script>  
+
+{% endblock %}

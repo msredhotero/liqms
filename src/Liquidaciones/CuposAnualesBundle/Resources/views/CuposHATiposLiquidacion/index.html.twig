@@ -1,0 +1,38 @@
+{% extends '::base.html.twig' %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/jquery.dataTables.1.9.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/dataTables.bootstrap.js') }}" type="text/javascript"></script>
+    <!-- some extra scripts -->    
+
+
+{% endblock %}
+
+{% block guia %}
+    {{ parent() }}          
+    <li class="active">Cupos Mensuales</li>
+{% endblock %}                
+                
+{% block contenido %}
+
+
+<br />
+
+<h3><span class="glyphicon glyphicon-list"></span> Listado Cupos Mensuales</h3>                          
+
+<div class="row">
+    {{ grid_search(grid) }}
+</div>
+
+
+
+<div class="row">
+    <h4>Resultado de la búsqueda:</h4>
+    <div class="e10"></div>
+    {{grid(grid, _self)}}
+    {% block grid_filters %}{% endblock %}
+</div>
+
+{% endblock %}

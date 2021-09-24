@@ -1,0 +1,136 @@
+{% extends '::base.html.twig' %}
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('cupos') }}">Cupos Mensuales</a></li>
+    <li class="active">Ver</li>
+{% endblock %}
+    
+    
+{% block contenido -%}
+    <h1>Cupos Mensual</h1>
+
+{% if app.session.flashbag.has('aviso_ok') %}
+
+
+    <div class="alert alert-success alert-dismissable" role="alert">
+
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+
+    {% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+        <p><span class="glyphicon glyphicon-ok"></span> 
+            {{ flahMessage }}
+        </p>
+
+    {% endfor %}
+
+    </div>
+
+{% endif %}
+
+        <div class="row">
+        <div class="form-group col-md-6" style="text-align: left;">
+            <label class="required" for=""> Cupo Anual </label>
+            <div class="input-group col-md-12">
+                {{ entity.cuposanuales }}
+            </div>
+        </div>
+
+        <div class="form-group col-md-6" style="text-align: left;">
+            <ul class="list-inline">
+                <li class="col-md-6">
+                    <label class="required" for=""> Año </label>
+                    <div class="input-group col-md-12">
+                        {{ entity.Anio }}
+                    </div>
+                </li>
+                <li class="col-md-6">
+                    <label class="required" for=""> Mes </label>
+                    <div class="input-group col-md-12">
+                        {{ entity.Mes }}
+                    </div>
+                </li>
+            </ul>
+        </div>
+        </div>
+        
+        <div class="row">
+        <div class="form-group col-md-3" style="text-align: left;">
+            <label for="Region">Tipo Dependencia</label>
+            <div class="input-group col-md-12">
+                {{ TipoDepe }}
+            </div>
+        </div>
+
+
+        <div class="form-group col-md-12" style="text-align: left;">
+            <label class="required" for="IdDependencia">Dependencia</label>
+            <div class="input-group col-md-12">
+                {{ Depe|raw }}
+            </div>
+        </div>
+        </div>
+
+        
+        <div class="row">
+        <div class="form-group col-md-6" style="text-align: left;">
+            <label class="required" for=""> Monto </label>
+            <div class="input-group col-md-12">
+                {{ entity.Monto|number_format(2,',','.') }}
+            </div>
+        </div>
+        
+            
+        <div class="form-group col-md-6" style="text-align: left;">
+            <label for="cuenta">Cuenta</label>
+            <div class="input-group col-md-12 bs-example">
+                <ul class="lstcuentas">
+                        {% for c in lstCuentas if c|length > 1 %}
+                    <li><button class="btn btn-success btn-xs" type="button" style="margin:5px;">{{ c }}</button></li>
+                        {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+        </div>
+        
+        
+        <div class="row">
+            <div class="form-group col-md-6" style="text-align: left;">
+                <label for="imputacion">Imputación</label>
+                <div class="input-group col-md-12">
+                    {{ imputacion|raw }}
+                </div>
+            </div>
+            
+            <div class="form-group col-md-6" style="text-align: left;">
+            <label class="required" for=""> Estado Cupo </label>
+            <div class="input-group col-md-12">
+                {{ CupoEstado }}
+            </div>
+            </div>
+
+        </div>
+
+
+    <br>
+
+        <ul class="record_actions list-inline" style="margint-top:15px;">
+            <li>
+                <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('cupos') }}'">Volver</button>
+            </li>
+            {% if (is_granted('ROLE_2')) %}
+            <li>
+                <button type="button" class="btn btn-ba" style="margin-left:0px;" onClick="location.href = '{{ path('cupos_edit', { 'id': entity.id }) }}'">Editar</button>
+            </li>
+            
+            <li><button type="button" class="btn btn-success" style="margin-left:0px;" onClick="location.href = '{{ path('cupos_new') }}'">Nuevo</button></li>
+            {% endif %}
+        </ul> 
+    
+    
+   
+{% endblock %}

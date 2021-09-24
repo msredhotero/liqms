@@ -1,0 +1,114 @@
+{% extends '::base.html.twig' %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/jquery.dataTables.1.9.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/dataTables.bootstrap.js') }}" type="text/javascript"></script>
+    <!-- some extra scripts -->    
+
+    
+{% endblock %}
+
+{% block guia %}
+    <li><a href="#"><span class="glyphicon glyphicon-list"></span></a>/</li>            
+    <li class="active">Listados de Cupos Mensuales</li>
+{% endblock %}                
+                
+{% block contenido %}
+    <h1>HAConceptosValor list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Refconcepto</th>
+                <th>Vigdesde</th>
+                <th>Vighasta</th>
+                <th>Mesdeaplicacion</th>
+                <th>Montodesde</th>
+                <th>Montohasta</th>
+                <th>Esdiscapacitado</th>
+                <th>Idagrupamiento</th>
+                <th>Reghorario</th>
+                <th>Catedesde</th>
+                <th>Catehasta</th>
+                <th>Antiguedaddesde</th>
+                <th>Antiguedadhasta</th>
+                <th>Idplanta</th>
+                <th>Monto</th>
+                <th>Modulos</th>
+                <th>Porcentaje</th>
+                <th>Cantidad</th>
+                <th>Montominimo</th>
+                <th>Montomaximo</th>
+                <th>Idconceptoaux</th>
+                <th>Condicion</th>
+                <th>Formulaistrue</th>
+                <th>Formulaisfalse</th>
+                <th>Perfil</th>
+                <th>Idencasillamiento</th>
+                <th>Funcion</th>
+                <th>Refgrupodepeaplica</th>
+                <th>Idatributo</th>
+                <th>Idregimenestatutario</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('haconceptosvalor_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.refConcepto }}</td>
+                <td>{% if entity.vigDesde %}{{ entity.vigDesde|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if entity.vigHasta %}{{ entity.vigHasta|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ entity.mesDeAplicacion }}</td>
+                <td>{{ entity.montoDesde }}</td>
+                <td>{{ entity.montoHasta }}</td>
+                <td>{{ entity.esDiscapacitado }}</td>
+                <td>{{ entity.idAgrupamiento }}</td>
+                <td>{{ entity.regHorario }}</td>
+                <td>{{ entity.cateDesde }}</td>
+                <td>{{ entity.cateHasta }}</td>
+                <td>{{ entity.antiguedadDesde }}</td>
+                <td>{{ entity.antiguedadHasta }}</td>
+                <td>{{ entity.idPlanta }}</td>
+                <td>{{ entity.monto }}</td>
+                <td>{{ entity.modulos }}</td>
+                <td>{{ entity.porcentaje }}</td>
+                <td>{{ entity.cantidad }}</td>
+                <td>{{ entity.montoMinimo }}</td>
+                <td>{{ entity.montoMaximo }}</td>
+                <td>{{ entity.idConceptoaux }}</td>
+                <td>{{ entity.condicion }}</td>
+                <td>{{ entity.formulaIsTrue }}</td>
+                <td>{{ entity.formulaIsFalse }}</td>
+                <td>{{ entity.perfil }}</td>
+                <td>{{ entity.idEncasillamiento }}</td>
+                <td>{{ entity.funcion }}</td>
+                <td>{{ entity.refGrupoDepeAplica }}</td>
+                <td>{{ entity.idAtributo }}</td>
+                <td>{{ entity.idRegimenEstatutario }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('haconceptosvalor_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('haconceptosvalor_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('haconceptosvalor_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

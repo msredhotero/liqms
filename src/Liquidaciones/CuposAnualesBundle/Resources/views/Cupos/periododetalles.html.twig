@@ -1,0 +1,237 @@
+{% extends '::base.html.twig' %}
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('cupos') }}">Cupos Mensuales</a></li>
+    <li><a href="{{ path('periodo') }}">Periodos</a></li>
+    <li class="active">Periodo Detalles</li>
+{% endblock %}
+    
+{% block contenido -%}
+    <style>
+        .posible {
+            background-color: #F39814;
+        }
+    </style>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        
+        
+        
+        function SumarTabla() {
+            var suma = 0;
+            $('#tcupos tr').each(function(){
+                
+                suma += parseFloat($(this).find('.montoC').val()||0,10); //numero de la celda 3
+            });
+            return suma;
+
+        }
+        
+        
+        /*
+        $('.montoC').click(function(){
+            alert($(this).val());
+        });
+        */
+       $(document).on("click",".montoC",function(){
+           $(this).removeClass("posible");
+       });
+       
+       $(document).on("focusout",".montoC",function(){
+            var padre = $(this).parents().get(1);
+
+            montoT = SumarTabla();
+            //$(padre).remove();
+            $('#montoTotal').html();
+            
+            resto = parseFloat($('#montoAnual').html()) - parseFloat($('#montoTotalAcumulado').html()) - montoT;
+            
+            if (resto < 0) {
+                $('#grabar').hide();
+                $('#errorResto').removeClass('alert-info');
+                $('#errorResto').addClass('alert-danger');
+                $('#errorResto').html('<strong>Error:</strong> El Resto no puede ser negativo.</div>');
+                $('#signo').html('-');
+            } else {
+                $('#grabar').show();
+                $('#errorResto').removeClass('alert-danger');
+                $('#errorResto').addClass('alert-info');
+                $('#errorResto').html('<strong>Importante:</strong> El Resto no puede ser negativo.</div>');
+                $('#signo').html('');
+            }
+            
+            $('#resto').html(resto);
+            $('#montoTotal').html(montoT);
+            $('#presupuesto').html(montoT).number(true, 2 );
+            $('#resto').number(true, 2 );
+            
+            
+            
+            //alert(SumarTabla());
+            //alert($(this).val());
+            //$('#total').val(SumarTabla());
+	});
+       
+        $(document).on("change",".montoC",function(){
+            var padre = $(this).parents().get(1);
+
+            montoT = SumarTabla();
+            //$(padre).remove();
+            $('#montoTotal').html();
+            
+            resto = parseFloat($('#montoAnual').html()) - parseFloat($('#montoTotalAcumulado').html()) - montoT;
+            
+            if (resto < 0) {
+                $('#grabar').hide();
+                $('#errorResto').removeClass('alert-info');
+                $('#errorResto').addClass('alert-danger');
+                $('#errorResto').html('<strong>Error:</strong> El Resto no puede ser negativo.</div>');
+                $('#signo').html('-');
+            } else {
+                $('#grabar').show();
+                $('#errorResto').removeClass('alert-danger');
+                $('#errorResto').addClass('alert-info');
+                $('#errorResto').html('<strong>Importante:</strong> El Resto no puede ser negativo.</div>');
+                $('#signo').html('');
+            }
+            
+            $('#resto').html(resto);
+            $('#montoTotal').html(montoT);
+            $('#presupuesto').html(montoT).number(true, 2 );
+            $('#resto').number(true, 2 );
+            
+            
+            
+            //alert(SumarTabla());
+            //alert($(this).val());
+            //$('#total').val(SumarTabla());
+	});
+        
+        $('.montosCupos').each(function(intIndex){
+           $(this).number( true, 2, ',', '.' );
+        });
+    });
+    </script>
+    
+    
+  {% set montoTotalAcumulado = 0 %}
+  {% for entityAcu in montoAcumulado if ("now"|date('m') != 1) %}
+    {% set montoTotalAcumulado = montoTotalAcumulado + entityAcu.Monto %}
+  {% endfor %}
+    
+  <h1>Periodos y Cupos Cargados</h1>  
+  
+  <form class="cupo form-inline" method="post" action="{{ path('cupos_cargarperiododetalles') }}">
+  <div class="row">
+      <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Dependencia</th>
+                <th>Monto</th>
+                <th>Cuenta</th>
+                <th style="width: 60px;">Cod.Depe</th>
+                
+            </tr>
+        </thead>
+        <tbody id="tcupos">
+            {% set montoTotal = 0 %}
+            {% set idInput = 0 %}
+        {% for entity in entities %}
+            {% set montoTotal = montoTotal + entity.Monto %}
+            {% set idInput = idInput + 1 %}
+            <tr>
+                <td>{{ entity.codigo }} - {{ entity.nombre }}</td>
+                <td><input type="text" style="width: 120px;" class="form-control montoC montosCupos" style=" text-align: right;" id="monto{{ idInput }}" name="monto{{ idInput }}" value="{{ entity.Monto|number_format(2,',','.') }}" /></td>
+                <td>{{ entity.Cuenta }}</td>
+                <td><input type="text" class="form-control" style="width: 60px;" id="depe{{ idInput }}" name="depe{{ idInput }}" value="{{ entity.codigo }}" readonly/></td>
+                <input type="hidden" value="{{ entity.refcuenta }}" id="refcuenta{{ idInput }}" name="refcuenta{{ idInput }}" />
+                <input type="hidden" value="{{ entity.Cod_Tipo_Dependencia }}" id="refcuenta{{ idInput }}" name="tipodepe{{ idInput }}" />
+            </tr>
+        {% endfor %}
+        <input type="hidden" value="{{ idInput }}" id="cantidad" name="cantidad" />
+        <input type="hidden" value="{{ "now"|date("m") }}" id="mes" name="mes" />
+        <input type="hidden" value="{{ "now"|date("Y") }}" id="anio" name="anio" />
+        <input type="hidden" value="{{ refcupoanual }}" id="refcupoanual" name="refcupoanual" />
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="2">Presupuesto a cargar:</th>
+                <th colspan="2" style="text-align: right;">$ <span id="presupuesto">{{ montoTotal|number_format(2, ',', '.') }}</span></th>
+            </tr>
+            <tr>
+                <th colspan="4"><h4>Resto: <span style="color: #F39814">Monto Anual</span> - <span style="color: #006dcc">Gastado</span> - <span style="color: #0A8">Nuevo Monto</span></h4></th>
+            </tr>
+            <tr>
+                <th colspan="4"><h4>Resto: <span id="montoAnual">{{ montoAnual }}</span> - <span id="montoTotalAcumulado">{{ montoTotalAcumulado }}</span> - <span id="montoTotal">{{montoTotal }}</span> = <span id="signo"></span>$ <span id="resto">{{ (montoAnual - (montoTotalAcumulado+montoTotal) - montoTotal)|number_format(2, ',', '.') }}</span></h4></th>
+            </tr>
+
+            
+        </tfoot>
+    </table>
+      
+      
+  </div>
+  <div class="row">
+      <ul class="list-inline">
+          
+              {%  if (montoAnual - montoTotalAcumulado - montoTotal)>=0 %}
+              <!--<button type="button" class="btn btn-ba" style="margin-left:0px;" onClick="location.href = '{{ path('spAgregaPeriodo', {'anio': anio, 'mes': mes, 'mesactual': 11,'icupoanual':1,'nuevocupoanual':1,'usuario':usuario,'todos':todos}) }}'">Copiar Periodo</button>-->
+          <li id="grabar">
+              {% else %}
+          <li id="grabar" style="display:none;">
+              {% endif %}
+              <button type="submit" class="btn btn-ba" style="margin-left:0px;">Copiar Periodo</button>
+              
+          </li>
+          <li>
+              <button type="button" class="btn btn-success" style="margin-left:0px;" onClick="location.href = '{{ path('reporteCuposPorPeriodos',{'anio': anio, 'mes': mes, 'idcupoanual':refcupoanual, 'cupoanterior':cupoanterior}) }}'"><span class="glyphicon glyphicon-save"></span>  Exportar Excel</button>
+          </li>
+          <li>
+              <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('periodo') }}'">Volver</button>
+          </li>
+      </ul>
+  </div>
+  <div class="row">
+      {%  if (montoAnual - montoTotalAcumulado - montoTotal)>=0 %}
+      <div class="alert alert-info" id="errorResto">
+          <strong>Importante:</strong> El Resto no puede ser negativo.</div>
+      {% else %}
+      <div class="alert alert-danger" id="errorResto">
+          <strong>Error:</strong> El Resto no puede ser negativo.</div>
+      {% endif %}
+          
+  </div>
+  </form>
+
+  <!--
+  <div style="height: 30px;"></div>
+  <div class="row">
+      <h3>Imputaciones Faltantes</h3>
+      <table class="table table-striped">
+            	<thead>
+                	<tr>
+                    	<th>Depedencia</th>
+                    	<th>Cuenta</th>
+                        <th>Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {# for imputaciones in lstImputacionesFaltantes #}
+                    <td>
+                        {# imputaciones.CODIGO }} - {{ imputaciones.NOMBRE #}
+                    </td>
+                    <td>
+                        {# imputaciones.CUENTA #}
+                    </td>
+                    <td>
+                        {# imputaciones.MONTO #}
+                    </td>
+                    
+                    {# endfor #}
+                </tbody>
+      </table>
+  </div>
+  -->
+
+{% endblock %}

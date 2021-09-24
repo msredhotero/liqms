@@ -1,0 +1,18 @@
+{% extends '::base.html.twig' %}
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('cupos') }}">Cupos Mensuales</a></li>
+    <li><a href="{{ path('cupos_new') }}">Crear Cupo Mensual</a></li>
+    <li class="active">Error</li>
+{% endblock %}
+    
+    
+{% block contenido -%}
+    
+    <div class="alert alert-danger">
+        <strong>Error!.</strong> {{ error }}
+    </div>
+    
+    <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path(direccion) }}'">Volver</button>
+{% endblock %}

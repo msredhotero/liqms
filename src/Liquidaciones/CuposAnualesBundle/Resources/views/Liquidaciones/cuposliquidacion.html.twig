@@ -1,0 +1,226 @@
+{% extends '::base.html.twig' %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <!-- some extra scripts -->    
+
+    
+{% endblock %}
+
+{% block guia %}
+    {{ parent() }}           
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Liquidaciones</a></li>
+    <li class="active">Cupos</li>
+{% endblock %}                
+                
+{% block contenido %}
+<style>
+    .grid-column-cupos_monto {
+        text-align: right;
+    }
+
+</style>
+
+<style>
+    tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+    
+    #example_paginate {
+        margin-top: 15px;
+    }
+
+    .nohabilita td {
+        border:1px solid #FA5858;
+        color: #000;
+    }
+
+    .nohabilita odd {
+        border:1px solid #FA5858;
+        color: #000;
+    }
+
+    .habilita td {
+        border:1px solid #9FF781;
+        color: #000;
+    }
+
+    .habilita odd {
+        border:1px solid #9FF781;
+        color: #000;
+    }
+    </style>
+
+<br />
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p><span class="glyphicon glyphicon-alert"></span> 
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    {# form_errors(form) #}
+
+</div>
+{% endif %}
+
+
+<!--<h4><span class="glyphicon glyphicon-filter"></span> Aplicar Filtros. Pagina: {# pagina #}</h4>                         -->
+
+<div class="row" style="margin-top:-3%;">
+    <h3><span class="glyphicon glyphicon-list"></span> Listado de Cupos cargados - Consulta</h3>
+    
+    {# block grid_filters #}
+    
+    {# endblock #}
+    {# grid(grid, _self) #}
+    <table class="table table-striped table-responsive table-bordered" id="example">
+        <thead>
+            <tr>
+                <th>Hab.</th>
+                <th>Año</th>
+                <th>Mes</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Dependencia</th>
+                <th>Cuenta</th>
+                <th>Adic</th>
+                <th>Cupo Anual</th>
+                <th>Fecha Cierre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Hab.</th>
+                <th>Año</th>
+                <th>Mes</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Dependencia</th>
+                <th>Cuenta</th>
+                <th>Adic</th>
+                <th>Cupo Anual</th>
+                <th>Fecha Cierre</th>
+                <th>Acciones</th>
+            </tr>
+        </tfoot>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+            {% if (entity.fechaHasta == '') %}
+            <td style="text-align: center;"><span style="color:#DF0101;" class="glyphicon glyphicon-ban-circle"></span></td>
+            {% elseif  ( date(entity.fechaDesde)|date('Y-m-d') <= "now"|date("Y-m-d") and date(entity.fechaHasta)|date('Y-m-d') >= "now"|date("Y-m-d")) %}
+            <td style="text-align: center;"><span style="color:#04B404;" class="glyphicon glyphicon-ok-circle"></span></td>
+            {% else %}
+            <td style="text-align: center;"><span style="color:#DF0101;" class="glyphicon glyphicon-ban-circle"></span></td>
+            {% endif %}
+                <td style="text-align: center;">{{ entity.anio }}</td>
+                <td style="text-align: center;">{{ entity.mes }}</td>
+                <td style="text-align: right;">{{ entity.monto|number_format(2,',','.') }}</td>
+                <td>{{ entity.cupoEstado|raw }}</td>
+                <td>{{ entity.codigo|raw }}</td>
+                <td>{{ entity.cuenta|raw }}</td>
+                <td style="text-align: center;">{{ entity.adicional }}</td>
+                <td>{{ entity.descripcion|raw }}</td>
+                <td style="text-align: center;">{% if (entity.fechaHasta != '') %} {{ entity.fechaHasta|date('Y-m-d') }} {% endif %}</td>
+                <td style="width: 130px;">
+                <div class="btn-group">
+                        <button class="btn btn-default" type="button">Acciones</button>
+
+                        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+
+                        <ul class="dropdown-menu" role="menu">
+                                
+                            <li {% if (usuaCarga == 0) %} style="display: none;" {% endif %}>
+                                <a href="{{ path('liquidaciones_buscarpersona', { 'refCupo': entity.id }) }}" class="lista" id="lista">Agregar</a>
+                            </li>
+                            
+                            <li>
+                                <a href="{{ path('liquidaciones_nomina', { 'refCupo': entity.id }) }}" class="lista" id="lista">Lista de Agentes</a>
+                            </li>
+
+                            <li {% if (usuaCarga == 0) %} style="display: none;" {% endif %}>
+                                <a href="{{ path('liquidaciones_autorizaciones', { 'refCupo': entity.id }) }}" class="autorizar" id="autorizar">Autorizar</a>
+                            </li>
+
+                        </ul>
+                </div>    
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    
+</div>
+<script src="{{ asset('js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    $('#example tfoot th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
+    } );
+ 
+    // DataTable
+    var table = $('#example').DataTable({
+                "order": [[ 1, "desc" ],[ 2, "desc" ]],
+		"language": {
+			"emptyTable":     "No hay datos cargados",
+			"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
+			"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
+			"infoFiltered":   "(filtrados del total de _MAX_ filas)",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"lengthMenu":     "Mostrar _MENU_ filas",
+			"loadingRecords": "Cargando...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"zeroRecords":    "No se encontraron resultados",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Ultimo",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": activate to sort column ascending",
+				"sortDescending": ": activate to sort column descending"
+			}
+		  }
+	} );
+    
+    $('.dataTables_filter').hide();
+    $('.dataTables_length').hide();
+    // Apply the search
+    table.columns().every( function () {
+        var that = this;
+ 
+        $( 'input', this.footer() ).on( 'keyup change', function () {
+            if ( that.search() !== this.value ) {
+                that
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+} );
+</script> 
+    
+{% endblock %}

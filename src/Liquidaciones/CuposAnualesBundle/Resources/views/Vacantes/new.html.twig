@@ -1,0 +1,147 @@
+{% extends '::base.html.twig' %}
+
+
+{% block guia %}
+    {{ parent() }}     
+    <li><a href="{{ path('vacantes') }}">Vacantes Mensuales</a></li>
+    <li class="active">Carga de Vacantes</li>
+{% endblock %}                
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    
+    </script>
+
+{% endblock %}
+    
+{% block contenido %}
+
+<!--<h4><span class="glyphicon glyphicon-filter"></span> Aplicar Filtros</h4>                         -->
+
+    <style>
+    
+
+    .separacion {
+        padding: 6px;
+    }
+    
+    .textoGrande {
+        width: 75%;
+    }
+    
+    .textoChico {
+        width: 140px;
+    }
+    
+    form.cupo .error ul li {
+        border: 1px solid rgba(0, 0, 0, 0);
+        border-radius: 4px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #F2DEDE;
+        border-color: #EBCCD1;
+        color: #A94442;
+    }
+    .form-horizontal .control-label {
+    text-align: left;
+    }
+</style>
+
+<h3><span class="glyphicon glyphicon-plus-sign"></span> Cargar Vacantes</h3>
+
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p>
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    
+
+</div>
+{% endif %}
+    
+    
+{% if app.session.flashbag.has('aviso_ok') %}
+
+
+    <div class="alert alert-success alert-dismissable" role="alert">
+
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+
+    {% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+        <p><span class="glyphicon glyphicon-ok"></span> 
+            {{ flahMessage }}
+        </p>
+
+    {% endfor %}
+       
+
+    </div>
+
+{% endif %}
+
+   
+    <form class="cupo form-inline" action="{{ path('vacantes_create') }}" method="post" {{ form_enctype(form) }}>
+                                
+        
+
+      <div class="row">
+            
+
+        <div class="form-group col-md-6" style="text-align: left;">
+            {{ form_label(form.cupos, null) }}
+            <div class="input-group col-md-12">
+                {{ form_widget(form.cupos) }}
+
+            </div>
+        </div>
+                
+        <div class="form-group col-md-3" style="text-align: left;">
+            {{ form_label(form.vacantes, null) }}
+            <div class="input-group col-md-12">
+                {{ form_widget(form.vacantes) }}
+            </div>
+        </div>
+          
+          
+
+
+     </div>
+
+
+    <ul class="list-inline" style="margin-top:10px;">
+            <li>
+
+                {{ form_widget(form.Guardar) }}
+                {{ form_widget(form._token) }}
+            </li>
+            <li>
+                <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('vacantes') }}'">Volver</button>
+            </li>
+        </ul>
+
+
+
+    </form>   
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('#liquidaciones_cuposanualesbundle_vacantes_vacantes').val(0);
+
+        $('#liquidaciones_cuposanualesbundle_vacantes_vacantes').number(true, 2, '.', '');
+    });
+    </script>
+
+{% endblock %}

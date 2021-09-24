@@ -1,0 +1,112 @@
+{% extends '::base.html.twig' %}
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Liquidaciones</a></li>
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Cupos</a></li>
+    <li class="active">Busqueda del Agente</li>
+{% endblock %}
+    
+{% block contenido -%}
+    <h1>Búsqueda del Agente</h1>
+    <div class="row" style="margin-bottom: 15px;">
+        <div class="error alert alert-danger">
+            
+        </div>
+    </div>
+    
+        <form id="form1" class="form-horizontal" method="post" action="{{ path('liquidaciones_seleccionarhistorico') }}">
+            
+            <div class="form-group col-md-12" style="text-align: left;">
+                <label for="busqueda" class="col-md-2">
+                    Búsqueda:
+
+                </label>
+                <div class="col-md-5">
+                    {# form_label(form.tipodependencia) #}
+
+                    <select name="filtro" id="filtro" class="form-control">
+                        <option value="1">Legajo</option>
+                        <option value="2">Apellido y Nombre</option>
+                        <option value="3">Nro Documento</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    {# form_label(form.tipodependencia) #}
+
+                    <input type="text" class="form-control" id="busqueda" name="busqueda"/>
+                </div>
+            </div>
+            <div class="form-group col-md-12" style="text-align: center;">
+                
+                <button type="button" class="btn btn-ba" id="buscar" >Buscar</button>
+                
+            </div>
+            
+        </form>
+
+        <ul>
+
+            <li>
+                <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_cuposliquidacion') }}'">Volver</button>
+            </li>
+
+        </ul>
+    
+    
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('#busqueda').click(function() {
+            $('.alert').hide(200);
+        });
+        
+        $('#buscar').click(function() {
+            
+        switch($('#filtro').val()) {
+        case '1':
+          if ($('#busqueda').val() != '') {  
+            if (!isNaN($('#busqueda').val())) {
+                  $('#form1').submit();
+            } else {
+                  $('.alert').show(200);
+                  $('.alert').html('Error: Solo puede ingresar numeros.');
+            }
+          } else {
+              $('.alert').show(200);
+              $('.alert').html('Error: Debe ingresar un valor.');
+          }
+         
+         break;
+        case '2':
+
+         if ($('#busqueda').val().length >= 4) {
+                $('#form1').submit();
+          } else {
+                $('.alert').show(200);
+                $('.alert').html('Error: Debe ingresar al menos 4 caracteres.');
+          }
+         break;
+        case '3':
+            if ($('#busqueda').val() != '') {  
+                if (!isNaN($('#busqueda').val())) {
+                       $('#form1').submit();
+                 } else {
+                       $('.alert').show(200);
+                       $('.alert').html('Error: Solo puede ingresar numeros.');
+                 }
+            } else {
+              $('.alert').show(200);
+              $('.alert').html('Error: Debe ingresar un valor.');
+            }
+         break;
+           } 
+        });
+        
+        $('#filtro').change(function(){
+            $('.alert').hide(100);
+        });
+        
+    }); 
+    </script>
+    {% endblock %}

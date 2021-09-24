@@ -1,0 +1,392 @@
+{% extends '::base.html.twig' %}
+
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Listados de Cupos</a></li>
+    <li><a href="{{ path('liquidaciones_buscarpersona',{'refCupo':cupo}) }}">Busqueda</a></li>
+    <li class="active">Carga</li>
+{% endblock %}
+
+
+{% block contenido -%}
+
+<style>
+    .typeahead, .tt-query, .tt-hint {
+    border: 2px solid #CCCCCC;
+    border-radius: 8px;
+    font-size: 24px;
+    height: 45px;
+    line-height: 30px;
+    outline: medium none;
+    padding: 8px 12px;
+    width: 396px;
+    }
+    .typeahead {
+        background-color: #FFFFFF;
+    }
+    .typeahead:focus {
+        border: 2px solid #0097CF;
+    }
+    .tt-query {
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    }
+    .tt-hint {
+        color: #999999;
+    }
+    .tt-dropdown-menu {
+        background-color: #FFFFFF;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        margin-top: 12px;
+        padding: 8px 0;
+        width: 422px;
+    }
+    .tt-suggestion {
+        font-size: 18px;
+        line-height: 24px;
+        padding: 3px 20px;
+    }
+    .tt-suggestion.tt-cursor {
+        background-color: #0097CF;
+        color: #FFFFFF;
+    }
+    .tt-suggestion p {
+        margin: 0;
+    }
+    .gist {
+        font-size: 14px;
+    }
+    #custom-templates .empty-message {
+        padding: 5px 10px;
+        text-align: center;
+    }
+    #multiple-datasets .league-name {
+        border-bottom: 1px solid #CCCCCC;
+        margin: 0 20px 5px;
+        padding: 3px 0;
+    }
+    #scrollable-dropdown-menu .tt-dropdown-menu {
+        max-height: 150px;
+        overflow-y: auto;
+    }
+    #rtl-support .tt-dropdown-menu {
+        text-align: right;
+    }
+
+
+    form.cupo .error1 ul li {
+        border: 1px solid rgba(0, 0, 0, 0);
+        border-radius: 4px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #F2DEDE;
+        border-color: #EBCCD1;
+        color: #A94442;
+    }
+    .form-horizontal .control-label {
+        text-align: left;
+    }
+
+    .bs-example {
+        border-color: #E5E5E5 #EEEEEE #EEEEEE;
+        border-style: solid;
+        border-width: 1px 0;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05) inset;
+        margin: 15px 15px;
+        padding: 45px 15px 15px;
+        position: relative;
+    }
+    .bs-example:after {
+        color: #959595;
+        content: "Horas Cargadas";
+        font-size: 12px;
+        font-weight: 700;
+        left: 15px;
+        letter-spacing: 1px;
+        position: absolute;
+        text-transform: uppercase;
+        top: 15px;
+    }
+    .bs-example + .highlight {
+        border-radius: 0;
+        border-width: 0 0 1px;
+        margin: 0;
+    }
+
+    .bs-callout {
+        -moz-border-bottom-colors: none;
+        -moz-border-left-colors: none;
+        -moz-border-right-colors: none;
+        -moz-border-top-colors: none;
+        border-color: #EEEEEE;
+        border-image: none;
+        border-radius: 3px;
+        border-style: solid;
+        border-width: 1px 1px 1px 5px;
+        margin: 20px 0;
+        padding: 20px;
+    }
+
+
+    .bs-callout-info {
+        border-left-color: #F5802D;
+    }
+
+    .bs-callout-reemplazo {
+        border-left-color: #0404B4;
+    }
+
+    .letraChica {
+        font-size: 0.8em;
+    }
+    @media (min-width: 768px) {
+        .bs-example {
+            background-color: #FFFFFF;
+            border-color: #DDDDDD;
+            border-radius: 4px 4px 0 0;
+            border-width: 1px;
+            box-shadow: none;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        .bs-example + .highlight {
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+            border-width: 1px;
+            margin-left: 0;
+            margin-right: 0;
+            margin-top: -16px;
+        }
+    }
+</style>
+
+
+
+
+
+
+
+    <h1><span class="glyphicon glyphicon-plus-sign"></span> Carga de Liquidaciones al Personal</h1>
+    <h3><span class="glyphicon glyphicon-menu-right"></span> Liquidación: {{ guia }}</h3>
+    <hr>
+
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p><span class="glyphicon glyphicon-alert"></span>
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    {# form_errors(form) #}
+
+</div>
+{% endif %}
+
+
+{% if app.session.flashbag.has('aviso_ok') %}
+
+<div class="alert alert-success alert-dismissable" role="alert">
+
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+    <p><span class="glyphicon glyphicon-ok"></span>
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    {# form_errors(edit_form) #}
+
+</div>
+{% endif %}
+
+{% set refpersonalcargo = 0 %}
+{% set regHorario = 0 %}
+{% for dato in resultados %}
+ <div class="row" id="persona{{ dato.RefPersonalCargo }}">
+     {% set refpersonalcargo = dato.RefPersonalCargo %}
+     {% set regHorario = dato.RegHorario %}
+    <div class="bs-callout bs-callout-info">
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <h4>
+            <a data-toggle="collapse" href="#collapse2" style="color:#000;">Datos del Agente</a>
+        </h4>
+        <div id="collapse2" class="panel-collapse collapse">
+        <p>
+            Apellido y Nombre: <span id="agrupamiento"><b>{{ dato.apyn|raw }}</b></span>
+        </p>
+        <p>
+            Legajo: <span id="depenom"><b>{{ dato.Legajo }}</b></span>
+        </p>
+        <p>
+            Nº de Documento: <span id="depepago"><b>{{ dato.nrodocumento }}</b></span>
+        </p>
+        <p>
+            Dependencia de Nombramiento: <span id="fechabaja"><b>{{ dato.DepeNom|raw }}</b></span>
+        </p>
+        <p>
+            Dependencia de Pago: <span id="fechabaja"><b>{{ dato.DepePago|raw }}</b></span>
+        </p>
+        <p>
+            Régimen Estatutario: <span id="fechabaja"><b>{{ dato.RegimenEstatutario|raw }}</b></span>
+        </p>
+        <p>
+            Régimen Horario: <span id="fechabaja"><b>{{ dato.RegHorario }} hs</b></span>
+        </p>
+        <p>
+            Categoria: <span id="fechabaja"><b>{{ dato.Categoria|raw }}</b></span>
+        </p>
+        </div>
+    </div>
+
+</div>
+
+{% endfor %}
+
+
+
+ <form class="cupo form-inline" action="{{ path('liquidaciones_createhs') }}" method="post" {{ form_enctype(form) }}>
+
+            <div class="row">
+            {{ form_errors(form.idPersonalCargo) }}
+
+            </div>
+
+
+            <div class="row">
+
+                <div class="form-group col-md-6 hidden" style="text-align: left;">
+                    {{ form_label(form.idPersonalCargo, null) }}
+                    <div class="input-group col-md-12">
+                        {{ form_widget(form.idPersonalCargo,{'value':refpersonalcargo}) }}
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 hidden" style="text-align: left;">
+                    {{ form_label(form.refCupoTipoLiquidacion, null) }}
+                    <div class="input-group col-md-12">
+                        {{ form_widget(form.refCupoTipoLiquidacion,{'value':refpersonalcargo}) }}
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="form-group col-md-3" align="center">
+
+                </div>
+                <div class="form-group col-md-3" align="center">
+                    Carga de Horas
+                </div>
+                <div class="form-group col-md-3" align="center">
+                    Total Horas Mensuales
+                </div>
+            </div>
+
+
+            <div class="row">
+
+                <input type="hidden" name="liquidaciones_cuposanualesbundle_liquidaciones_hsExCantDobles" id="liquidaciones_cuposanualesbundle_liquidaciones_hsExCantDobles" value="0"/>
+
+
+                <div class="form-group col-md-3">
+                    <label class="form-label"> Seleccione el Modulo:</label>
+                    <div class="input-group col-md-12">
+                        <select id="reftipomodulos" name="reftipomodulos" class="form-control">
+                            {% for valor in valorhora %}
+                                <option value="{{ valor.id }}">{{ valor.modulo }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group col-md-3">
+                    <label class="form-label"> Cantidad:</label>
+                    <div class="input-group col-md-12">
+                        {{ form_widget(form.hsExCantSimples,{'value':0}) }}
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    {{ form_label(form.montoTotalCalculado, null) }}
+                    <div class="input-group col-md-12">
+
+                        {{ form_widget(form.montoTotalCalculado) }}
+
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+            <ul class="list-inline" style="margin-top:10px;">
+                    <li>
+
+                        {{ form_widget(form.Guardar) }}
+                        {{ form_widget(form._token) }}
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_nomina',{'refCupo':cupo}) }}'">Volver</button>
+                    </li>
+                </ul>
+
+
+
+</form>
+
+    <script>
+    $(function() {
+
+        $('#liquidaciones_cuposanualesbundle_liquidaciones_hsExCantSimples').number(true, 0, '.','');
+
+        $('#liquidaciones_cuposanualesbundle_liquidaciones_hsExCantSimples').change(function() {
+            if ($(this).val() < 0) {
+                $(this).val(0);
+            }
+        });
+
+        $('#liquidaciones_cuposanualesbundle_liquidaciones_hsExCantSimples').keyup(function() {
+
+            if (!isNaN($('#liquidaciones_cuposanualesbundle_liquidaciones_hsExCantSimples').val())) {
+
+                if ($('#liquidaciones_cuposanualesbundle_liquidaciones_hsExCantSimples').val()>= 0) {
+
+
+                    montoS = $('#liquidaciones_cuposanualesbundle_liquidaciones_hsExCantSimples').val() * 1034.40;
+
+                    $('#liquidaciones_cuposanualesbundle_liquidaciones_montoTotalCalculado').val((montoS).toFixed(2));
+                }
+            }
+        });
+
+        $('#reftipomodulos').change(function() {
+            $('#liquidaciones_cuposanualesbundle_liquidaciones_montoTotalCalculado').val(0);
+            $('#liquidaciones_cuposanualesbundle_liquidaciones_hsExCantSimples').val(0);
+        });
+
+
+    });
+    </script>
+
+
+{% endblock %}

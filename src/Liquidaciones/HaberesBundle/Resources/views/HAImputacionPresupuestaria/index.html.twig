@@ -1,0 +1,112 @@
+{% extends '::base.html.twig' %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/jquery.dataTables.1.9.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/dataTables.bootstrap.js') }}" type="text/javascript"></script>
+    <!-- some extra scripts -->    
+
+    
+{% endblock %}
+
+{% block guia %}
+    <li><a href="#"><span class="glyphicon glyphicon-list"></span></a>/</li>            
+    <li class="active">Listados de Cupos Mensuales</li>
+{% endblock %}                
+                
+{% block contenido %}
+    <h1>HAImputacionPresupuestaria list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Idjurisdiccionpresupuestaria</th>
+                <th>Dependenciapresupuestaria</th>
+                <th>Principalsubprinc</th>
+                <th>Regimenestatutario</th>
+                <th>Agrupamiento</th>
+                <th>Descripcion</th>
+                <th>Programadescripcion</th>
+                <th>Ace</th>
+                <th>Aco</th>
+                <th>Pan</th>
+                <th>Programa</th>
+                <th>Subprograma</th>
+                <th>Proyecto</th>
+                <th>Grupo</th>
+                <th>Aes</th>
+                <th>Subgrupo</th>
+                <th>Obra</th>
+                <th>Ubicaciongeografica</th>
+                <th>Finalidad</th>
+                <th>Funcion</th>
+                <th>Subfuncion</th>
+                <th>Procedencia</th>
+                <th>Principal</th>
+                <th>Subprincipal</th>
+                <th>Parcial</th>
+                <th>Subparcial</th>
+                <th>Activa</th>
+                <th>Cargos</th>
+                <th>Credito</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('haimputacionpresupuestaria_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.idJurisdiccionPresupuestaria }}</td>
+                <td>{{ entity.dependenciaPresupuestaria }}</td>
+                <td>{{ entity.principalSubPrinc }}</td>
+                <td>{{ entity.regimenEstatutario }}</td>
+                <td>{{ entity.agrupamiento }}</td>
+                <td>{{ entity.descripcion }}</td>
+                <td>{{ entity.programaDescripcion }}</td>
+                <td>{{ entity.ace }}</td>
+                <td>{{ entity.aco }}</td>
+                <td>{{ entity.pan }}</td>
+                <td>{{ entity.programa }}</td>
+                <td>{{ entity.subPrograma }}</td>
+                <td>{{ entity.proyecto }}</td>
+                <td>{{ entity.grupo }}</td>
+                <td>{{ entity.aES }}</td>
+                <td>{{ entity.subGrupo }}</td>
+                <td>{{ entity.obra }}</td>
+                <td>{{ entity.ubicacionGeografica }}</td>
+                <td>{{ entity.finalidad }}</td>
+                <td>{{ entity.funcion }}</td>
+                <td>{{ entity.subFuncion }}</td>
+                <td>{{ entity.procedencia }}</td>
+                <td>{{ entity.principal }}</td>
+                <td>{{ entity.subPrincipal }}</td>
+                <td>{{ entity.parcial }}</td>
+                <td>{{ entity.subParcial }}</td>
+                <td>{{ entity.activa }}</td>
+                <td>{{ entity.cargos }}</td>
+                <td>{{ entity.credito }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('haimputacionpresupuestaria_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('haimputacionpresupuestaria_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('haimputacionpresupuestaria_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

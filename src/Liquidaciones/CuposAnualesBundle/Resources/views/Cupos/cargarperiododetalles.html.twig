@@ -1,0 +1,21 @@
+{% extends '::base.html.twig' %}
+
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('cupos') }}">Cupos Mensuales</a></li>
+    <li><a href="{{ path('periodo') }}">Periodo</a></li>
+    <li class="active">Resultado</li>
+{% endblock %}
+    
+{% block contenido -%}
+    <h1>Resultado Generado</h1>
+    
+    <h4>Cantidad de registros cargados: {{ cantidad }}</h4>
+    
+    <h4>Monto Total Cargado: {{ montototal|number_format(2, ',', '.') }}</h4>
+    
+    <p>Lista de imputaciones: {{ lstimputaciones }}</p>
+    <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('cupos') }}'">Volver</button>
+    
+{% endblock %}    

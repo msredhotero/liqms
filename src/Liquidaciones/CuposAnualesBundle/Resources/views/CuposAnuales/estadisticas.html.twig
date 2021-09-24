@@ -1,0 +1,149 @@
+{% extends '::base.html.twig' %}
+
+
+{% block guia %}
+    {{ parent() }}     
+    <li><a href="{{ path('cuposanuales') }}">Cupos Anuales</a></li>
+    <li class="active">Gastado</li>
+{% endblock %}                
+                
+{% block contenido %}
+    
+<link rel="stylesheet" href="{{ asset('css/shThemejqPlot.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/shCoreDefault.min.css') }}">  
+    
+<!--<h4><span class="glyphicon glyphicon-filter"></span> Aplicar Filtros</h4>                         -->
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p>
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    
+
+</div>
+{% endif %}
+    
+    
+{% if app.session.flashbag.has('aviso_ok') %}
+
+
+    <div class="alert alert-success alert-dismissable" role="alert">
+
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+
+    {% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+        <p><span class="glyphicon glyphicon-ok"></span> 
+            {{ flahMessage }}
+        </p>
+
+    {% endfor %}
+       
+
+    </div>
+
+{% endif %}
+
+<div class="row">
+
+    <div align="center">
+        <div class="panel panel-ba">
+            <div class="panel-heading">
+                Presupuesto Anual por Dependencias
+            </div>
+            <div class="panel-body">
+                <div id="chart1"></div>
+                <pre class="code brush:js"></pre>
+            </div>
+            
+        
+        </div>
+        
+        
+        <div class="panel panel-ba">
+            <div class="panel-heading">
+                % de Presupuestos Anual Por Dependencias
+            </div>
+            <div class="panel-body">
+                <div id="chart7"></div>
+                <pre class="code brush:js"></pre>
+            </div>
+            
+        
+        </div>
+        
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+        $.jqplot.config.enablePlugins = true;
+        //marcos
+        {% set cantidadDepes = 0 %}
+        var s1 = [{% for entity2 in entities2 %} {{ entity2.MONTO }}{% set cantidadDepes = cantidadDepes + 1 %}, {% endfor %}];
+        var ticks = [{% for entity in entities %} '{{ entity.CODIGO|raw }}', {% endfor %}];
+         
+        plot1 = $.jqplot('chart1', [s1], {
+            // Only animate if we're not using excanvas (not in IE 7 or IE 8)..
+            animate: !$.jqplot.use_excanvas,
+            height: 60 + (25 * {{ cantidadDepes }}),
+            seriesDefaults:{
+                renderer:$.jqplot.BarRenderer,
+                rendererOptions: {
+                    barDirection: 'horizontal'   
+                },
+                pointLabels: { show: true }
+            },
+            axes: {
+                yaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    ticks: ticks
+                }
+            },
+            highlighter: { show: true }
+        });
+     
+        $('#chart1').bind('jqplotDataClick', 
+            function (ev, seriesIndex, pointIndex, data) {
+                $('#info1').html('series: '+seriesIndex+', point: '+pointIndex+', data: '+data);
+            }
+        );
+
+
+
+        plot7 = jQuery.jqplot('chart7', 
+        [[{% for entity3 in entities3 %} ['{{ entity3.CODIGO|raw }}',{{ entity3.PORCENTAJE }}], {% endfor %}]], 
+        {
+          title: ' ', 
+          height: 400 + (20 * {{ cantidadDepes }}),
+          seriesDefaults: {shadow: true, renderer: jQuery.jqplot.PieRenderer, rendererOptions: { showDataLabels: true } }, 
+          legend: { show:true }
+        }
+      );
+    });
+</script> 
+
+
+<script src="{{ asset('js/jquery.jqplot.min.js') }}"></script>
+<script src="{{ asset('js/jquery.jqplot.min.js') }}"></script>
+
+<script src="{{ asset('js/shCore.min.js') }}"></script>
+<script src="{{ asset('js/shBrushJScript.min.js') }}"></script>
+<script src="{{ asset('js/shBrushXml.min.js') }}"></script>
+<!-- Additional plugins go here -->
+
+<script src="{{ asset('js/jqplot.barRenderer.min.js') }}"></script>
+<script src="{{ asset('js/jqplot.pieRenderer.min.js') }}"></script>
+<script src="{{ asset('js/jqplot.categoryAxisRenderer.min.js') }}"></script>
+<script src="{{ asset('js/jqplot.pointLabels.min.js') }}"></script>
+{% endblock %}

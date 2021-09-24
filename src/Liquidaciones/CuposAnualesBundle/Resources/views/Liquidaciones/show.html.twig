@@ -1,0 +1,477 @@
+{% extends '::base.html.twig' %}
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Liquidaciones</a></li>
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Cupos</a></li>
+    <li><a href="{{ path('liquidaciones_nomina', { 'refCupo': cupo }) }}">Nomina de Agentes</a></li>
+    <li class="active">Ver</li>
+{% endblock %}
+    
+    
+{% block contenido -%}
+    
+
+<style>
+    .typeahead, .tt-query, .tt-hint {
+    border: 2px solid #CCCCCC;
+    border-radius: 8px;
+    font-size: 24px;
+    height: 45px;
+    line-height: 30px;
+    outline: medium none;
+    padding: 8px 12px;
+    width: 396px;
+    }
+    .typeahead {
+        background-color: #FFFFFF;
+    }
+    .typeahead:focus {
+        border: 2px solid #0097CF;
+    }
+    .tt-query {
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    }
+    .tt-hint {
+        color: #999999;
+    }
+    .tt-dropdown-menu {
+        background-color: #FFFFFF;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        margin-top: 12px;
+        padding: 8px 0;
+        width: 422px;
+    }
+    .tt-suggestion {
+        font-size: 18px;
+        line-height: 24px;
+        padding: 3px 20px;
+    }
+    .tt-suggestion.tt-cursor {
+        background-color: #0097CF;
+        color: #FFFFFF;
+    }
+    .tt-suggestion p {
+        margin: 0;
+    }
+    .gist {
+        font-size: 14px;
+    }
+    #custom-templates .empty-message {
+        padding: 5px 10px;
+        text-align: center;
+    }
+    #multiple-datasets .league-name {
+        border-bottom: 1px solid #CCCCCC;
+        margin: 0 20px 5px;
+        padding: 3px 0;
+    }
+    #scrollable-dropdown-menu .tt-dropdown-menu {
+        max-height: 150px;
+        overflow-y: auto;
+    }
+    #rtl-support .tt-dropdown-menu {
+        text-align: right;
+    }
+
+    
+    form.cupo .error1 ul li {
+        border: 1px solid rgba(0, 0, 0, 0);
+        border-radius: 4px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #F2DEDE;
+        border-color: #EBCCD1;
+        color: #A94442;
+    }
+    .form-horizontal .control-label {
+        text-align: left;
+    }
+    
+    .bs-example {
+        border-color: #E5E5E5 #EEEEEE #EEEEEE;
+        border-style: solid;
+        border-width: 1px 0;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05) inset;
+        margin: 15px 15px;
+        padding: 45px 15px 15px;
+        position: relative;
+    }
+    .bs-example:after {
+        color: #959595;
+        content: "Horas Cargadas";
+        font-size: 12px;
+        font-weight: 700;
+        left: 15px;
+        letter-spacing: 1px;
+        position: absolute;
+        text-transform: uppercase;
+        top: 15px;
+    }
+    .bs-example + .highlight {
+        border-radius: 0;
+        border-width: 0 0 1px;
+        margin: 0;
+    }
+    
+    .bs-callout {
+        -moz-border-bottom-colors: none;
+        -moz-border-left-colors: none;
+        -moz-border-right-colors: none;
+        -moz-border-top-colors: none;
+        border-color: #EEEEEE;
+        border-image: none;
+        border-radius: 3px;
+        border-style: solid;
+        border-width: 1px 1px 1px 5px;
+        margin: 20px 0;
+        padding: 20px;
+    }
+
+
+    .bs-callout-info {
+        border-left-color: #F5802D;
+    }
+    
+    .bs-callout-reemplazo {
+        border-left-color: #0404B4;
+    }
+
+    .letraChica {
+        font-size: 0.8em;
+    }
+    @media (min-width: 768px) {
+        .bs-example {
+            background-color: #FFFFFF;
+            border-color: #DDDDDD;
+            border-radius: 4px 4px 0 0;
+            border-width: 1px;
+            box-shadow: none;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        .bs-example + .highlight {
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+            border-width: 1px;
+            margin-left: 0;
+            margin-right: 0;
+            margin-top: -16px;
+        }
+    }
+</style>    
+    <h1>Liquidación Cargada</h1>
+
+{% if app.session.flashbag.has('aviso_ok') %}
+
+
+    <div class="alert alert-success alert-dismissable" role="alert">
+
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+
+    {% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+        <p><span class="glyphicon glyphicon-ok"></span> 
+            {{ flahMessage }}
+        </p>
+
+    {% endfor %}
+
+    </div>
+
+{% endif %}
+   
+{% set refpersonalcargo = 0 %}
+{% for dato in resultados %}
+ <div class="row" id="persona{{ dato.RefPersonalCargo }}">
+     {% set refpersonalcargo = dato.RefPersonalCargo %}
+    <div class="bs-callout bs-callout-info">
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <h4>
+            <a data-toggle="collapse" href="#collapse2" style="color:#000;">Agente</a>
+        </h4>
+        <div id="collapse2" class="panel-collapse collapse">
+        <p>
+            Apellido y Nombre: <span id="agrupamiento"><b>{{ dato.apyn|raw }}</b></span>
+        </p>
+        <p>
+            Legajo: <span id="depenom"><b>{{ dato.Legajo }}</b></span>
+        </p>
+        <p>
+            Nº de Documento: <span id="depepago"><b>{{ dato.nrodocumento }}</b></span>
+        </p>
+        <p>
+            Dependencia de Nombramiento: <span id="fechabaja"><b>{{ dato.DepeNom|raw }}</b></span>
+        </p>
+        <p>
+            Dependencia de Pago: <span id="fechabaja"><b>{{ dato.DepePago|raw }}</b></span>
+        </p>
+        <p>
+            Régimen Estatutario: <span id="fechabaja"><b>{{ dato.RegimenEstatutario|raw }}</b></span>
+        </p>
+        <p>
+            Régimen Horario: <span id="fechabaja"><b>{{ dato.RegHorario }} hs</b></span>
+        </p>
+        <p>
+            Categoria: <span id="fechabaja"><b>{{ dato.Categoria|raw }}</b></span>
+        </p>
+        </div>
+    </div>
+
+</div>   
+    
+{% endfor %}      
+ 
+    
+ {% set ruta = 0 %}  
+    
+    {% if (modo == 'rg') %}
+        {% if ((idcuenta != 24) or (idcuenta != 25)) %}
+        {% set ruta = path('liquidaciones_edit',{'id':entity.id,'refRGpersonalcargo':entity.RGIdPersonalCargo}) %}
+        {% else %}
+        {% set ruta = path('liquidaciones_editdeuda',{'id':entity.id,'refRGpersonalcargo':entity.RGIdPersonalCargo}) %}
+        {% endif %}
+    
+        {% set refpersonalcargoReemplazo = 0 %}
+{% for dato in resultadosReemplazo %}
+ <div class="row" id="persona{{ dato.RefPersonalCargo }}">
+     {% set refpersonalcargoReemplazo = dato.RefPersonalCargo %}
+    <div class="bs-callout bs-callout-reemplazo">
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <h4>
+            Reemplazado
+        </h4>
+        <p>
+            Apellido y Nombre: <span id="agrupamiento"><b>{{ dato.apyn|raw }}</b></span>
+        </p>
+        <p>
+            Legajo: <span id="depenom"><b>{{ dato.Legajo }}</b></span>
+        </p>
+        <p>
+            NroDocumento: <span id="depepago"><b>{{ dato.nrodocumento }}</b></span>
+        </p>
+        <p>
+            Depe Nombramiento: <span id="fechabaja"><b>{{ dato.DepeNom|raw }}</b></span>
+        </p>
+        <p>
+            Depe Pago: <span id="fechabaja"><b>{{ dato.DepePago|raw }}</b></span>
+        </p>
+        <p>
+            Regimen Est.: <span id="fechabaja"><b>{{ dato.RegimenEstatutario|raw }}</b></span>
+        </p>
+    </div>
+
+</div>   
+    
+{% endfor %}
+    
+    
+    <div class="row">
+        <div class="form-group col-md-3" style="text-align: center;">
+            <label class="required" for=""> Fecha </label>
+            <div class="input-group col-md-12">
+                {{ entity.rgfecha|date('d/m/Y') }}
+            </div>
+        </div>
+        
+        <div class="form-group col-md-3" style="text-align: center;">
+            <label class="required" for=""> Canti. Guardias </label>
+            <div class="input-group col-md-12">
+                {{ entity.rGCantHsGuardia }}
+            </div>
+        </div>
+
+        <div class="form-group col-md-3" style="text-align: center;">
+            <label class="required" for=""> Guardia </label>
+            <div class="input-group col-md-12">
+                {{ concepto }}
+            </div>
+        </div>
+        
+        <div class="form-group col-md-3" style="text-align: right;">
+            <label class="required" for=""> Importe </label>
+            <div class="input-group col-md-12">
+                {{ entity.montoTotalCalculado|number_format(2,',','.') }}
+            </div>
+        </div>
+        
+        <!--
+        <div class="form-group col-md-3" style="text-align: center;">
+            <label class="required" for=""> Requiere Autoriz. </label>
+            <div class="input-group col-md-12">
+                {# if entity.requiereAutorizacion == 1 #}
+                <div class="grid grid_boolean_true">1</div>
+                {# else #}
+                <div class="grid grid_boolean_false">0</div>
+                {# endif #}
+
+            </div>
+        </div>
+        
+        <div class="form-group col-md-3" style="text-align: left;">
+            <label class="required" for=""> Usuario Autoriz. </label>
+            <div class="input-group col-md-12">
+                {# entity.usuaAutoriza #}
+
+            </div>
+        </div>
+        -->
+    </div>
+
+    
+    {% elseif (modo == 'horas') %}
+    
+    <div class="row">
+
+        {% if (idcuenta == 26) %}
+
+        {% set ruta = path('liquidaciones_edithsinvestigacion',{'id':entity.id}) %}
+
+        <div class="form-group col-md-3" style="text-align: center;">
+            <label class="required" for=""> Horas/Modulos </label>
+            <div class="input-group col-md-12">
+                {{ entity.hsExCantSimples }}
+            </div>
+        </div>
+
+        {% else %}
+
+        {% set ruta = path('liquidaciones_ediths',{'id':entity.id}) %}
+
+        <div class="form-group col-md-3" style="text-align: left;">
+            <label class="required" for=""> Valor Hora </label>
+            <div class="input-group col-md-12">
+                {{ entity.hsExValorHora|number_format(2,',','.') }}
+            </div>
+        </div>
+
+        <div class="form-group col-md-3" style="text-align: center;">
+            <label class="required" for=""> Hora Simple </label>
+            <div class="input-group col-md-12">
+                {{ entity.hsExCantSimples }}
+            </div>
+        </div>
+
+        <div class="form-group col-md-3" style="text-align: center;">
+            <label class="required" for=""> Hora Doble </label>
+            <div class="input-group col-md-12">
+                {{ entity.hsExCantDobles }}
+            </div>
+        </div>
+        {% endif %}
+
+        
+
+        <div class="form-group col-md-3" style="text-align: left;">
+            <label class="required" for=""> Total </label>
+            <div class="input-group col-md-12">
+                {{ entity.montoTotalCalculado|number_format(2,',','.') }}
+            </div>
+        </div>
+        <!--
+        <div class="form-group col-md-3" style="text-align: center;">
+            <label class="required" for=""> Requiere Autoriz. </label>
+            <div class="input-group col-md-12">
+                {% if entity.requiereAutorizacion == 1 %}
+                <div class="grid grid_boolean_true">1</div>
+                {% else %}
+                <div class="grid grid_boolean_false">0</div>
+                {% endif %}
+
+            </div>
+        </div>
+        
+        <div class="form-group col-md-3" style="text-align: left;">
+            <label class="required" for=""> Usuario Autoriz. </label>
+            <div class="input-group col-md-12">
+                {{ entity.usuaAutoriza }}
+
+            </div>
+        </div>
+        -->
+    </div>
+    
+    {% else %}
+    <div class="row">
+
+        {% set ruta = path('liquidaciones_editmonto',{'id':entity.id}) %}
+        <div class="form-group col-md-3" style="text-align: left;">
+            <label class="required" for=""> Total </label>
+            <div class="input-group col-md-12">
+                {{ entity.montoTotalCalculado|number_format(2,',','.') }}
+            </div>
+        </div>
+        
+    </div>
+    {% endif %}
+    
+
+        <br>
+
+        <ul class="record_actions list-inline" style="margint-top:15px;">
+            <li>
+                <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_nomina',{'refCupo':cupo}) }}'">Volver</button>
+            </li>
+            {% if (CupoEstado == 'Abierto') %}
+            <li>
+                <button type="button" class="btn btn-ba" style="margin-left:0px;" onClick="location.href = '{{ ruta }}'">Editar</button>
+            </li>
+            <li><button label="Eliminar" class="btn btn-danger" name="form[Eliminar]" id="Eliminar" type="button" data-toggle="modal" data-target="#myModal3">Eliminar</button></li>
+            {% endif %}
+        </ul> 
+<!--
+   <div id="dialog2" title="Eliminar Montos del Agente">
+    	<p>
+        	<span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+            ¿Esta seguro que desea eliminar el monto cargado?.<span id="proveedorEli"></span>
+        </p>
+        
+    </div>
+-->
+<div class="modal fade" id="myModal3" tabindex="1" style="z-index:500000;" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form class="form-inline formulario" role="form">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Eliminar Montos del Agente</h4>
+      </div>
+      <div class="modal-body">
+        * Solo se borraran los montos cargados para esta liquidación
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="eliminarMonto">Eliminar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+    {% if (CupoEstado == 'Abierto') %}
+   <script type="text/javascript">
+       
+    $(document).ready(function(){
+        
+        $('#eliminarMonto').click(function(){
+            
+           url = "{{ path('liquidaciones_delete', { 'id': entity.id, 'idcupo': cupo }) }}";
+           $(location).attr('href',url);
+        });
+        
+        
+        
+        
+    });
+    </script>      
+    {% endif %}
+{% endblock %}

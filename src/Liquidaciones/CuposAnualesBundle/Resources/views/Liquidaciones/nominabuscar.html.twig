@@ -1,0 +1,84 @@
+{% extends '::base.html.twig' %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <!-- some extra scripts -->    
+
+    
+{% endblock %}
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Listados de Cupos</a></li>
+    <li class="active">Buscar Agentes</li>
+{% endblock %}                
+                
+{% block contenido %}
+<style>
+    .grid-column-cupos_monto {
+        text-align: right;
+    }
+
+</style>
+
+<br />
+
+
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p><span class="glyphicon glyphicon-alert"></span> 
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+</div>
+{% endif %}
+
+<div class="row">
+    <h3><span class="glyphicon glyphicon-menu-right"></span> Liquidación: {{ guia|raw }}</h3>
+    <hr>
+    <h4><span class="glyphicon glyphicon-search"></span> Resultado de la búsqueda:</h4>
+    <div class="e10"></div>
+    {{grid(grid)}}
+    
+    {% block grid_filters %}{% endblock %}
+    {% block grid_pager_totalcount %}
+        {{ '%count% Resultados' | transchoice(grid.totalCount, {'%count%': grid.totalCount}) ~ ', Monto Total: $' ~ total|number_format(2,',','.') }}
+    {% endblock grid_pager_totalcount %}
+
+</div>
+
+
+<br>
+
+        <ul class="record_actions list-inline" style="margint-top:15px;">
+            <li>
+                <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_nomina',{'refCupo': refcupo }) }}'">Volver</button>
+            </li>
+            <li>
+
+                {% if (idCuenta == 24) %}
+                <button type="button" class="btn btn-ba" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_fechanovedaddeuda',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-plus-sign"></span>  Agregar</button>
+                {% else %}
+                <button type="button" class="btn btn-ba" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_fechanovedad',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-plus-sign"></span>  Agregar</button>
+                {% endif %}
+
+            </li>
+
+        </ul> 
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $('#grid_a1b47d3fc98f748416f68d3ac9897850_search').prepend("<input type='hidden' name='refCupo' id='refCupo' value='{{ refcupo }}' />");
+    });
+</script>
+{% endblock %}

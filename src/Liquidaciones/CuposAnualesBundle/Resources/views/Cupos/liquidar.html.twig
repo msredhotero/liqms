@@ -1,0 +1,85 @@
+{% extends '::base.html.twig' %}
+
+
+{% block guia %}
+    {{ parent() }}     
+    <li><a href="{{ path('cupos') }}">Cupos Mensuales</a></li>
+    <li class="active">Pasaje a Liquidación</li>
+{% endblock %}
+    
+    
+{% block contenido -%}
+    
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p>
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    
+
+</div>
+{% endif %}
+    
+    
+{% if app.session.flashbag.has('aviso_ok') %}
+
+
+    <div class="alert alert-success alert-dismissable" role="alert">
+
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+
+    {% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+        <p><span class="glyphicon glyphicon-ok"></span> 
+            {{ flahMessage }}
+        </p>
+
+    {% endfor %}
+       
+
+    </div>
+
+{% endif %}
+    
+    
+    <h1><span class="glyphicon glyphicon-plus-sign"></span> Pasaje a Liquidación</h1>
+    <div class="alert alert-info">
+        <p><span class="glyphicon glyphicon-info-sign"></span> Seleccione la cabecera, recuerde que deben pertenecer al mismo tipo de liquidación para que se copien los datos!.</p>
+    </div>
+    <h3><span class="glyphicon glyphicon-menu-right"></span> Liquidación: {{ guia }}</h3>
+    <hr>    
+    
+    <form class="cupo form-inline" action="{{ path('cupos_pasaraliquidacion', { 'cupo': cupos }) }}" method="post">
+        <div class="form-group col-md-6" style="text-align: left;">
+            <label for="cabeceras" class="required">Cabeceras Haberes</label>
+            <div class="input-group col-md-12">
+                <select class="form-control" name="cabeceras" id="cabeceras">
+                    {% for dato in resCabeceras %}
+                    <option value="{{ dato.id }}">{{ dato.tipoLiquidacion|raw }} - Adicional: {{ dato.adicional }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div> 
+        
+        
+        <div class="form-group col-md-6" style="text-align: left;">
+            <label for="cabeceras" class="required">Acción</label>
+            <div class="input-group col-md-12">
+                <button type="submit" class="btn btn-ba" id="copiar">Liquidar</button>
+            </div>
+        </div>
+        
+        <input type="hidden" name="cupo" id="cupo" value="{{ cupos }}"/>
+    </form>    
+{% endblock %}    

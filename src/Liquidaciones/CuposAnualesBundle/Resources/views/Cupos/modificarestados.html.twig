@@ -1,0 +1,236 @@
+{# empty Twig template #}
+{% extends '::base.html.twig' %}
+
+
+{% block guia %}
+    {{ parent() }}           
+    <li><a href="{{ path('cupos') }}">Cupos Mensuales</a></li>
+    <li class="active">Modificar Estados</li>
+{% endblock %}                
+                
+{% block contenido %}
+<style>
+    .grid-column-cupos_monto {
+        text-align: right;
+    }
+
+</style>
+<style>
+    tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+    
+    #example_paginate {
+        margin-top: 15px;
+    }
+    </style>
+    
+    <style>
+    .grid-column-cupos_monto {
+        text-align: right;
+    }
+
+</style>
+
+<style>
+    tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+    
+    #example_paginate {
+        margin-top: 15px;
+    }
+    </style>
+<br />
+
+                        
+
+<div class="row">
+    <h4><span class="glyphicon glyphicon-info-sign"></span> Recuerde que modificará masivamente el estado de los cupos.</h4> 
+</div>
+
+<div class="row">
+    <h4><span class="glyphicon glyphicon-search"></span> Resultado de la búsqueda:</h4>
+    
+    
+        <form id="grid_cb17420af4f125edd4b5e3f6010ba23f" method="post" action="{{ path('cupos_modificarestadosmasivocerrado') }}">
+        <div class="grid_header">
+            <div class="mass-actions" style="padding:20px 0; margin-bottom: 15px;">
+                <span class="grid_massactions_helper">
+                    <input type="button" class="btn btn-default" id="marcarVisible" value="Seleccionar visible">
+                    |
+                    <input type="button" class="btn btn-default" id="desmarcarVisible" value="Deseleccionar visible">
+                    |
+                    <input type="button" class="btn btn-default" id="marcarTodo" value="Seleccionar todo">
+                    |
+                    <input type="button" class="btn btn-default" id="desmarcarTodo" value="Deseleccionar todo">
+                    <span id="grid_cb17420af4f125edd4b5e3f6010ba23f_mass_action_selected" class="mass-actions-selected"></span>
+                </span>
+                <div class="grid_massactions" style="float:right;">
+                    Acción
+                    <input id="grid_cb17420af4f125edd4b5e3f6010ba23f_mass_action_all" type="hidden" value="0" name="grid_cb17420af4f125edd4b5e3f6010ba23f[__action_all_keys]">
+                    <select name="grid_cb17420af4f125edd4b5e3f6010ba23f[__action_id]">
+                    <option value="1">Cerrado</option>
+                    <option value="2">Abierto</option>
+                    <option value="3">Cerrado Aprobado</option>
+                    <option value="4">Cerrado Liquidado</option>
+                    <option value="6">Vencido</option>
+                    </select>
+                    <input type="submit" value="Enviar">
+                </div>
+            </div>
+        </div>
+        
+        
+    <table class="table table-striped table-responsive table-bordered" id="example">
+        <thead>
+            <tr>
+                <th class="align-center" style="width:15px;">
+                    <input class="grid-mass-selector" type="checkbox" onclick="grid_cb17420af4f125edd4b5e3f6010ba23f_markVisible(this.checked);">
+                </th>
+                <th>Año</th>
+                <th>Mes</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Dependencia</th>
+                <th>Region</th>
+                <th>Cuenta</th>
+                <th>Adic</th>
+                <th>Cupo Anual</th>
+
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th>Año</th>
+                <th>Mes</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Dependencia</th>
+                <th>Region</th>
+                <th>Cuenta</th>
+                <th>Adic</th>
+                <th>Cupo Anual</th>
+            </tr>
+        </tfoot>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><input type="checkbox" name="grid_cb17420af4f125edd4b5e3f6010ba23f[__action][{{ entity.id }}]" value="1" class="action"></td>
+                <td>{{ entity.anio }}</td>
+                <td>{{ entity.mes }}</td>
+                <td>{{ entity.monto }}</td>
+                <td>{{ entity.cupoEstado|raw }}</td>
+                <td>{{ entity.codigo|raw }}</td>
+                <td>{{ entity.region|raw }}</td>
+                <td>{{ entity.cuenta|raw }}</td>
+                <td>{{ entity.adicional }}</td>
+                <td>{{ entity.descripcion|raw }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+          
+    </form>
+</div>
+
+<script src="{{ asset('js/jquery.dataTables10.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/dataTables10.bootstrap.js') }}" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+
+        $('#example tfoot th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
+    } );
+ 
+    // DataTable
+    var otable = $('#example').DataTable({
+        "lengthMenu": [[100, 150 -1], [100, 150, "All"]],
+        "order": [[ 1, "desc" ],[ 2, "desc" ]],
+        "language": {
+            "emptyTable":     "No hay datos cargados",
+            "info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
+            "infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
+            "infoFiltered":   "(filtrados del total de _MAX_ filas)",
+            "infoPostFix":    "",
+            "thousands":      ",",
+            "lengthMenu":     "Mostrar _MENU_ filas",
+            "loadingRecords": "Cargando...",
+            "processing":     "Procesando...",
+            "search":         "Buscar:",
+            "zeroRecords":    "No se encontraron resultados",
+            "paginate": {
+                "first":      "Primero",
+                "last":       "Ultimo",
+                "next":       "Siguiente",
+                "previous":   "Anterior"
+            },
+            "aria": {
+                "sortAscending":  ": activate to sort column ascending",
+                "sortDescending": ": activate to sort column descending"
+            }
+          }
+    } );
+        
+    $('.dataTables_filter').hide();
+    $('.dataTables_length').hide();    
+    // Apply the search
+    otable.columns().every( function () {
+        var that = this;
+ 
+        $( 'input', this.footer() ).on( 'keyup change', function () {
+            if ( that.search() !== this.value ) {
+                that
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );   
+        
+        
+        var allPages = otable.rows().nodes();
+
+        $('body').on('click', '#marcarTodo', function () {
+
+            $('input[type="checkbox"]', allPages).prop('checked', true);
+
+            $(this).toggleClass('allChecked');
+        });
+        
+        $('body').on('click', '#desmarcarTodo', function () {
+
+            $('input[type="checkbox"]', allPages).prop('checked', false);
+
+            $(this).toggleClass('allChecked');
+        });
+        
+        $('body').on('click', '#marcarVisible', function () {
+
+            $('input[type="checkbox"]').prop('checked', true);
+
+            $(this).toggleClass('allChecked');
+        });
+        
+        $('body').on('click', '#desmarcarVisible', function () {
+
+            $('input[type="checkbox"]').prop('checked', false);
+
+            $(this).toggleClass('allChecked');
+        });
+        
+        
+
+    });
+    
+</script>
+
+{% endblock %}

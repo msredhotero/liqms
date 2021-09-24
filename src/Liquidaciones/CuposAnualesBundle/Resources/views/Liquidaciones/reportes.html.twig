@@ -1,0 +1,182 @@
+{% extends '::base.html.twig' %}
+
+{% block guia %}
+    {{ parent() }}
+    <li class="active">Reportes</li>
+{% endblock %}
+
+{% block contenido %}
+    <style>
+        .form-control, .btn-ba {
+            margin-bottom: 10px;
+        }
+
+        .form-control, .btn-success, .btn-default {
+            margin-bottom: 10px;
+        }
+
+    </style>
+
+    {% if app.session.flashbag.has('aviso_error') %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+            </button>
+        {% for flashMessage in app.session.flashbag.get('aviso_error') %}
+            <p>
+                {{ flashMessage }}
+            </p>
+        {% endfor %}
+        </div>
+    {% endif %}
+
+
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <h3 class="panel-title">Reportes</h3>
+        </div>
+        <div class="panel-body">
+            <form method="post" action="{{ path('generarreporte') }}" class="form-inline">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="label-control">Tipo de Reporte</label>
+                        <div class="input-group col-md-12">
+                            <select class="form-control" id="tiporeporte" name="tiporeporte">
+                                <option value="1">Listado de Consultas de Novedades</option>
+                                <option value="2">Listado nominalizado de lo liquidado por dependencia</option>
+                                <option value="3">Listado Normalizado de lo cargado por dependencia</option>
+                                <option value="4">Resumen de vacantes y total de licencias por periodo por dependenica</option>
+                                <option value="5">Reporte por Dependencia de Parte - Personal Ley 10430 - Hospitales.</option>
+                                <option value="6">Reporte de Bajas de Cargos de Medicos.</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label class="label-control">Dependencia</label>
+                        <div class="input-group col-md-12">
+                            <select class="form-control" id="iddependencia" name="iddependencia">
+                            {% for reg in entityHAL %}
+                                <option value="{{ reg.IdDependencia }}">
+                                    {{ reg.IdDependencia }} - {{ reg.Dependencia|raw }}
+                                </option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3 divFiltro2">
+                        <label class="label-control">Cupo Anual</label>
+                        <div class="input-group col-md-12">
+                            <select class="form-control" id="idcupoanual" name="idcupoanual">
+                            {% for a in anual %}
+                                <option value="{{ a.ID }}">
+                                    {{ a|raw }}
+                                </option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-1 divFiltro3">
+                        <label class="label-control">Mes</label>
+                        <div class="input-group col-md-12">
+                            <select class="form-control" id="mes" name="mes">
+                            {% for mes in meses %}
+                                <option value="{{ mes }}">
+                                    {{ mes }}
+                                </option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-1 divFiltro4">
+                        <label class="label-control">Año</label>
+                        <div class="input-group col-md-12">
+                            <select class="form-control" id="anio" name="anio" style="padding:0;">
+                            {% for an in anios %}
+                                <option value="{{ an.anio }}">
+                                    {{ an.anio }}
+                                </option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3 divFiltro5">
+                        <label class="label-control">Cuentas</label>
+                        <div class="input-group col-md-12">
+                            <select class="form-control" id="idcuenta" name="idcuenta">
+                            {% for cuenta in formCP %}
+                                <option value="{{ cuenta.ID }}">
+                                    {{ cuenta.cuenta|raw }}
+                                </option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                    <br>
+                        <button id="buscar" type="submit" class="btn btn-ba">Generar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+
+        $(document).ready(function(){
+
+            $('.divFiltro2').hide();
+            $('.divFiltro3').hide();
+            $('.divFiltro4').hide();
+            $('.divFiltro5').hide();
+
+            $('#tiporeporte').change(function() {
+                if ($(this).val() == 1) {
+                    $('.divFiltro2').hide();
+                    $('.divFiltro3').hide();
+                    $('.divFiltro4').hide();
+                    $('.divFiltro5').hide();
+                } else {
+                    if (($(this).val() == 5) or ($(this).val() == 6)) {
+                        $('.divFiltro2').hide();
+                        $('.divFiltro3').hide();
+                        $('.divFiltro4').hide();
+                        $('.divFiltro5').hide();
+                    } else {
+                        $('.divFiltro2').show();
+                        $('.divFiltro3').show();
+                        $('.divFiltro4').show();
+                        $('.divFiltro5').show();
+                    }
+
+                }
+            });
+
+           $('.btnA').change(function(){
+               $('#rptCuentasTipoArchivo').val($(this).attr("id"));
+           })
+
+           $('.btnB').change(function(){
+               $('#rptCuentasDependenciasTipoArchivo').val($(this).attr("id"));
+           })
+
+           $('#buscar').each(function(){
+              $(this).click(function(){
+                 $('.alert').hide();
+              });
+           });
+
+        });
+
+    </script>
+{% endblock %}

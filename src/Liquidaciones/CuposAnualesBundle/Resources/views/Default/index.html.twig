@@ -1,0 +1,50 @@
+{% extends '::base.html.twig' %}
+
+
+
+
+{% block guia %}
+    {{ parent() }}           
+    <li class="active">Liquidaciones</li>
+{% endblock %}                
+                
+{% block contenido %}
+<style>
+    .grid-column-cupos_monto {
+        text-align: right;
+    }
+
+</style>
+
+<br />                       
+
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p><span class="glyphicon glyphicon-alert"></span> 
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    {# form_errors(form) #}
+
+</div>
+{% endif %}
+
+<div class="row">
+    <h1>Bienvenido al Sistema de Liquidaciones Web.</h1>
+    <h4><span class="glyphicon glyphicon-info-sign"></span> Se comunica que a partir del próximo mes, la carga por reemplazos vacantes será limitada en función a las nuevas designaciones y bajas producidas.</h4>
+</div>
+
+<hr>
+
+
+
+{% endblock %}
+

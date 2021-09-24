@@ -1,0 +1,289 @@
+{% extends '::base.html.twig' %}
+
+
+{% block guia %}
+    {{ parent() }}     
+    <li><a href="{{ path('cupos') }}">Cupos Mensuales</a></li>
+    <li class="active">Carga Fecha de Cierre</li>
+{% endblock %}                
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link type="text/css" rel="stylesheet"
+        href="{{ asset('css/datepicker3.css') }}" />
+
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script type="text/javascript" 
+        src="{{ asset('js/bootstrap-datepicker.js') }}">
+    </script>
+    
+    <script type="text/javascript" 
+        src="{{ asset('js/locales/bootstrap-datepicker.es.js') }}">
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var f = new Date();
+            
+            function sumarDias(fecha, dias){
+                fecha.setDate(fecha.getDate() + dias);
+                return fecha;
+            }
+              
+            f = sumarDias(f,-1);
+            
+              
+            var diasR = '-' + f.getDate().toString() + 'd';
+            $('#liquidaciones_cuposanualesbundle_fechacierre_fechaDesde').datepicker({
+                format: "dd/mm/yyyy",
+                startDate: diasR,
+                todayBtn: false,
+                language: "es",
+                autoclose: true,
+                todayHighlight: true
+            });
+            
+            $('#liquidaciones_cuposanualesbundle_fechacierre_fechaHasta').datepicker({
+                format: "dd/mm/yyyy",
+                startDate: diasR,
+                todayBtn: false,
+                language: "es",
+                autoclose: true,
+                todayHighlight: true
+            });
+        });
+    </script>
+
+{% endblock %}
+    
+{% block contenido %}
+
+<!--<h4><span class="glyphicon glyphicon-filter"></span> Aplicar Filtros</h4>                         -->
+
+    <style>
+    
+
+    .separacion {
+        padding: 6px;
+    }
+    
+    .textoGrande {
+        width: 75%;
+    }
+    
+    .textoChico {
+        width: 140px;
+    }
+    
+    form.cupo .error ul li {
+        border: 1px solid rgba(0, 0, 0, 0);
+        border-radius: 4px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #F2DEDE;
+        border-color: #EBCCD1;
+        color: #A94442;
+    }
+    .form-horizontal .control-label {
+    text-align: left;
+    }
+</style>
+
+<h3><span class="glyphicon glyphicon-plus-sign"></span> Nueva Fecha Cierre</h3>
+
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p>
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    
+
+</div>
+{% endif %}
+    
+    
+{% if app.session.flashbag.has('aviso_ok') %}
+
+
+    <div class="alert alert-success alert-dismissable" role="alert">
+
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+
+    {% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+        <p><span class="glyphicon glyphicon-ok"></span> 
+            {{ flahMessage }}
+        </p>
+
+    {% endfor %}
+       
+
+    </div>
+
+{% endif %}
+
+   
+    <form class="cupo form-inline" action="{{ path('fechacierre_create') }}" method="post" {{ form_enctype(form) }}>
+                                
+        
+
+      <div class="row">
+            
+
+            <div class="form-group col-md-2" style="text-align: left;">
+                <label for="Region">
+                    {# form_label(form.tipodependencia) #}
+                    Tipo Depe.
+
+                </label>
+                <div class="input-group col-md-12">
+                    {# form_label(form.tipodependencia) #}
+
+                    <select name="regiones" id="regiones" class="form-control textoChico">
+                        <option value="">-- Seleccione --</option>
+                        {% for reg in entityHAL %}
+                        <option value="{{ reg.COD_TIPO_DEPENDENCIA }}">
+                            {{ reg.COD_TIPO_DEPENDENCIA }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+          
+          
+          <div class="form-group col-md-6" style="text-align: left;">
+            <label class="required" for="zenva_cuposbundle_cupostype_idDependencia">Dependencia</label>
+            {# form_label(form.idDependencia) #}
+            <div class="input-group col-md-12">
+                {# form_widget(form.idDependencia) #}
+                <select name="idDependencia" id="idDependencia" class="form-control">
+
+                </select>
+            </div>
+        </div>  
+          
+          
+          <div class="form-group col-md-4" style="text-align: left;">
+                <label for="Region">
+                    {# form_label(form.tipodependencia) #}
+                    Cupos Anuales
+
+                </label>
+                <div class="input-group col-md-12">
+                    {# form_label(form.tipodependencia) #}
+
+                    <select name="cupoanual" id="cupoanual" class="form-control textoChico">
+                        <option value="">-- Seleccione --</option>
+                        {% for cupoanual in cuposAnuales %}
+                        <option value="{{ cupoanual.ID }}">
+                            {{ cupoanual.DESCRIPCION  ~ ' - '  ~ cupoanual.ANIO }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+          
+          
+            <div class="form-group col-md-4" style="text-align: left;">
+                <label for="Mes">
+                    {# form_label(form.tipodependencia) #}
+                    Mes
+
+                </label>
+                <div class="input-group col-md-12">
+                    {# form_label(form.tipodependencia) #}
+
+                    <select name="mes" id="mes" class="form-control textoChico">
+                        <option value="">-- Seleccione --</option>
+                        {% for i in 1..12 %}
+                        <option value="{{ i }}">
+                            {{ i }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+          
+            <div class="form-group col-md-4">
+                {{ form_label(form.fechaDesde, null) }}
+                <div class="input-group col-md-12">
+                    {{ form_widget(form.fechaDesde) }}
+                </div>
+            </div>
+
+            <div class="form-group col-md-4">
+                {{ form_label(form.fechaHasta, null) }}
+                <div class="input-group col-md-12">
+                    {{ form_widget(form.fechaHasta) }}
+                </div>
+            </div>
+
+
+     </div>
+
+
+            <ul class="list-inline" style="margin-top:10px;">
+                    <li>
+
+                        {{ form_widget(form.Guardar) }}
+                        {{ form_widget(form._token) }}
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('fechacierre') }}'">Volver</button>
+                    </li>
+                </ul>
+
+
+
+        </form>   
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var f = new Date();
+        $("#mes option[value=" + f.getMonth() + "]").attr('selected','selected');   
+        
+        function verDep(depe) {
+             var direAccion  = "{{ path('dependencias_verDependencias',{'regsan':'3'}) }}";
+            direAccion = direAccion.substr(0,direAccion.length-1)+depe;
+            $('.imperror').hide();
+             var getParams = {regsan: 'HS'};
+             $.get(direAccion,
+            function(data){
+
+                var cant=data.length; //aca capturamos el tamaño del arreglo devuelto.
+                var cadenaValor = '<option value="">-- Todas --</option>';
+
+                for(var i=0;i<cant;i++){
+                    //ihtml+="<tr><td>"+data[i]['codigo']+"</td><td>"+data[i]['nombre']+"</td></tr>"; //lista de datos
+
+                    cadenaValor=cadenaValor+'<option value='+data[i].id+'>'+data[i].id+' - '+data[i].dependencia+'</option>';
+                }
+
+                $('#idDependencia').html(cadenaValor);
+
+            }); 
+         }
+         
+         $('#regiones').change(function() {
+            verDep($('#regiones').val());
+         });
+    });
+        
+</script>
+{% endblock %}

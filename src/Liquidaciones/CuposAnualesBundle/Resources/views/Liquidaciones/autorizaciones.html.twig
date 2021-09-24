@@ -1,0 +1,55 @@
+{% extends '::base.html.twig' %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/jquery.dataTables.1.9.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/dataTables.bootstrap.js') }}" type="text/javascript"></script>
+    <!-- some extra scripts -->    
+
+    
+{% endblock %}
+
+{% block guia %}
+    {{ parent() }}           
+    <li><a href="{{ path('liquidaciones_cuposliquidacion') }}">Listados de Cupos</a></li>
+    <li class="active">Autorizar Agentes</li>
+{% endblock %}                
+                
+{% block contenido %}
+<style>
+    .grid-column-cupos_monto {
+        text-align: right;
+    }
+
+</style>
+
+<br />
+<div class="row">
+{% if (totalRegistros == 0) %}
+    <h4><span class="glyphicon glyphicon-ban-circle" style="color:#C30;"></span> No exiten datos cargados.</h4>
+{% endif %}
+</div>
+
+<div class="row">
+    <h4><span class="glyphicon glyphicon-search"></span> Resultado de la búsqueda:</h4>
+    <div class="e10"></div>
+    {{grid(grid, _self)}}
+    {% block grid_filters %}{% endblock %}
+</div>
+
+
+<br>
+
+        <ul class="record_actions list-inline" style="margint-top:15px;">
+            <li>
+                <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_cuposliquidacion') }}'">Volver</button>
+            </li>
+            <li>
+
+                <button type="button" class="btn btn-ba" style="margin-left:0px;" onClick="location.href = '{{ path('liquidaciones_buscarpersona',{'refCupo':refcupo}) }}'"><span class="glyphicon glyphicon-plus-sign"></span>  Agregar</button>
+
+            </li>
+
+        </ul> 
+{% endblock %}

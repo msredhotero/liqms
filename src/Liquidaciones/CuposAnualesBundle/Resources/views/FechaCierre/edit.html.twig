@@ -1,0 +1,164 @@
+{% extends '::base.html.twig' %}
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('cupos') }}">Cupos Mensuales</a></li>
+    <li><a href="{{ path('fechacierre') }}">Fecha Cierre</a></li>
+    <li class="active">Modificar</li>
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link type="text/css" rel="stylesheet"
+        href="{{ asset('css/datepicker3.css') }}" />
+
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script type="text/javascript" 
+        src="{{ asset('js/bootstrap-datepicker.js') }}">
+    </script>
+    
+    <script type="text/javascript" 
+        src="{{ asset('js/locales/bootstrap-datepicker.es.js') }}">
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var f = new Date();
+            
+            function sumarDias(fecha, dias){
+                fecha.setDate(fecha.getDate() + dias);
+                return fecha;
+            }
+              
+            f = sumarDias(f,-1);
+            
+              
+            var diasR = '-' + f.getDate().toString() + 'd';
+            $('#liquidaciones_cuposanualesbundle_fechacierre_fechaDesde').datepicker({
+                format: "dd/mm/yyyy",
+                startDate: diasR,
+                todayBtn: false,
+                language: "es",
+                autoclose: true,
+                todayHighlight: true
+            });
+            
+            $('#liquidaciones_cuposanualesbundle_fechacierre_fechaHasta').datepicker({
+                format: "dd/mm/yyyy",
+                startDate: diasR,
+                todayBtn: false,
+                language: "es",
+                autoclose: true,
+                todayHighlight: true
+            });
+        });
+    </script>
+
+{% endblock %}
+{% block contenido -%}
+
+    <h1><span class="glyphicon glyphicon-edit"></span> Modificar Fecha de Cierre</h1>
+    <ul class="list-group">
+        <li class="list-group-item list-group-item-info"><span class="glyphicon glyphicon-list-alt"></span> información del Cupo Mensual</li>
+        <li class="list-group-item list-group-item-default"><b>Tipo Liquidación:</b> {{ lblTipoLiquidacion }}</li>
+        <li class="list-group-item list-group-item-default"><b>Dependencia:</b> {{ lblDependencia }}</li>
+        <li class="list-group-item list-group-item-default"><b>Año:</b> {{ lblAnio }}</li>
+        <li class="list-group-item list-group-item-default"><b>Mes:</b> {{ lblMes }}</li>
+    </ul>
+
+{% if app.session.flashbag.has('aviso_error') %}
+
+<div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_error') %}
+    <p>
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    {{ form_errors(edit_form) }}
+
+</div>
+{% endif %}
+    
+    
+{% if app.session.flashbag.has('aviso_ok') %}
+
+<div class="alert alert-success alert-dismissable" role="alert">
+
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+
+{% for flahMessage in app.session.flashbag.get('aviso_ok') %}
+    <p><span class="glyphicon glyphicon-ok"></span> 
+        {{ flahMessage }}
+    </p>
+
+{% endfor %}
+    {{ form_errors(edit_form) }}
+
+</div>
+{% endif %}
+    
+    
+    <form class="cupo form-inline" action="{{ path('fechacierre_update', { 'id': entity.id }) }}" method="POST" {{ form_enctype(edit_form) }}>
+
+                                
+                                <div class="row">
+                                <div class="form-group col-md-6 hidden" style="text-align: left;">
+                                    {{ form_label(edit_form.refCupo, null) }}
+                                    <div class="input-group col-md-12">
+                                        {{ form_widget(edit_form.refCupo) }}
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="form-group col-md-4">
+                                    {{ form_label(edit_form.fechaDesde, null) }}
+                                    <div class="input-group col-md-12">
+                                        {{ form_widget(edit_form.fechaDesde) }}
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar desde"></span></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    {{ form_label(edit_form.fechaHasta, null) }}
+                                    <div class="input-group col-md-12">
+                                        {{ form_widget(edit_form.fechaHasta) }}
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                    </div>
+                                </div>
+                                </div>
+                                    
+                               
+                                
+
+                                
+                                <ul class="list-inline" style="margin-top:10px;">
+                                    <li>
+
+                                        {{ form_widget(edit_form.Guardar) }}
+                                        {{ form_widget(edit_form._token) }}
+                                    </li>
+                                    <li>
+                                        <button type="button" class="btn btn-default" style="margin-left:0px;" onClick="location.href = '{{ path('fechacierre') }}'">Volver</button>
+                                    </li>
+                                </ul>
+                                    
+                               
+                          
+                            </form>   
+    
+    
+
+{% endblock %}

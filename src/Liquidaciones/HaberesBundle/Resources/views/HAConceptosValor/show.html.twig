@@ -1,0 +1,148 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>HAConceptosValor</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Refconcepto</th>
+                <td>{{ entity.refConcepto }}</td>
+            </tr>
+            <tr>
+                <th>Vigdesde</th>
+                <td>{{ entity.vigDesde|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Vighasta</th>
+                <td>{{ entity.vigHasta|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Mesdeaplicacion</th>
+                <td>{{ entity.mesDeAplicacion }}</td>
+            </tr>
+            <tr>
+                <th>Montodesde</th>
+                <td>{{ entity.montoDesde }}</td>
+            </tr>
+            <tr>
+                <th>Montohasta</th>
+                <td>{{ entity.montoHasta }}</td>
+            </tr>
+            <tr>
+                <th>Esdiscapacitado</th>
+                <td>{{ entity.esDiscapacitado }}</td>
+            </tr>
+            <tr>
+                <th>Idagrupamiento</th>
+                <td>{{ entity.idAgrupamiento }}</td>
+            </tr>
+            <tr>
+                <th>Reghorario</th>
+                <td>{{ entity.regHorario }}</td>
+            </tr>
+            <tr>
+                <th>Catedesde</th>
+                <td>{{ entity.cateDesde }}</td>
+            </tr>
+            <tr>
+                <th>Catehasta</th>
+                <td>{{ entity.cateHasta }}</td>
+            </tr>
+            <tr>
+                <th>Antiguedaddesde</th>
+                <td>{{ entity.antiguedadDesde }}</td>
+            </tr>
+            <tr>
+                <th>Antiguedadhasta</th>
+                <td>{{ entity.antiguedadHasta }}</td>
+            </tr>
+            <tr>
+                <th>Idplanta</th>
+                <td>{{ entity.idPlanta }}</td>
+            </tr>
+            <tr>
+                <th>Monto</th>
+                <td>{{ entity.monto }}</td>
+            </tr>
+            <tr>
+                <th>Modulos</th>
+                <td>{{ entity.modulos }}</td>
+            </tr>
+            <tr>
+                <th>Porcentaje</th>
+                <td>{{ entity.porcentaje }}</td>
+            </tr>
+            <tr>
+                <th>Cantidad</th>
+                <td>{{ entity.cantidad }}</td>
+            </tr>
+            <tr>
+                <th>Montominimo</th>
+                <td>{{ entity.montoMinimo }}</td>
+            </tr>
+            <tr>
+                <th>Montomaximo</th>
+                <td>{{ entity.montoMaximo }}</td>
+            </tr>
+            <tr>
+                <th>Idconceptoaux</th>
+                <td>{{ entity.idConceptoaux }}</td>
+            </tr>
+            <tr>
+                <th>Condicion</th>
+                <td>{{ entity.condicion }}</td>
+            </tr>
+            <tr>
+                <th>Formulaistrue</th>
+                <td>{{ entity.formulaIsTrue }}</td>
+            </tr>
+            <tr>
+                <th>Formulaisfalse</th>
+                <td>{{ entity.formulaIsFalse }}</td>
+            </tr>
+            <tr>
+                <th>Perfil</th>
+                <td>{{ entity.perfil }}</td>
+            </tr>
+            <tr>
+                <th>Idencasillamiento</th>
+                <td>{{ entity.idEncasillamiento }}</td>
+            </tr>
+            <tr>
+                <th>Funcion</th>
+                <td>{{ entity.funcion }}</td>
+            </tr>
+            <tr>
+                <th>Refgrupodepeaplica</th>
+                <td>{{ entity.refGrupoDepeAplica }}</td>
+            </tr>
+            <tr>
+                <th>Idatributo</th>
+                <td>{{ entity.idAtributo }}</td>
+            </tr>
+            <tr>
+                <th>Idregimenestatutario</th>
+                <td>{{ entity.idRegimenEstatutario }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('haconceptosvalor') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('haconceptosvalor_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

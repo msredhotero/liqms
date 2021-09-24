@@ -1,0 +1,358 @@
+{% extends '::base.html.twig' %}
+
+{% block guia %}
+    {{ parent() }}
+    <li><a href="{{ path('cuposanuales') }}">Cupos Mensuales</a></li>
+    <li class="active">Reportes Por Cuentas</li>
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script type="text/javascript" 
+        src="{{ asset('js/bootstrap-datepicker.js') }}">
+    </script>
+    
+    <script type="text/javascript" 
+        src="{{ asset('js/locales/bootstrap-datepicker.es.js') }}">
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+
+            $('#fechapago').datepicker({
+                format: "yy-mm-dd",
+                todayBtn: false,
+                language: "es",
+                autoclose: true,
+                todayHighlight: true
+            });
+        });
+    </script>
+
+{% endblock %}
+
+{% block contenido %}
+    <style>
+        .form-control, .btn-ba {
+            margin-bottom: 10px;
+        }
+        
+        .form-control, .btn-success, .btn-default {
+            margin-bottom: 10px;
+        }
+        
+    </style>
+
+    <h1>Reportes</h1>
+    
+    {% if app.session.flashbag.has('aviso_error') %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+            </button>
+        {% for flashMessage in app.session.flashbag.get('aviso_error') %}
+            <p>
+                {{ flashMessage }}
+            </p>
+        {% endfor %}
+        </div>
+    {% endif %}
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Nomina de Agentes</h3>
+        </div>
+        <div class="panel-body">
+            <form action="{{ path('reportenominaagentes') }}" method="post" {{ form_enctype(form) }}>
+
+                
+                <div class="form-group col-md-12">
+                    
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="input-group">
+                                    <label>Cupo Anual - Cuenta - Region - Año - Mes</label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-3">
+                                <div class="input-group">
+                                    <span class="input-group-addon beautiful">
+                                        <input type="radio" checked="" class="btnA" name="btnradioA" id="1" value="1">
+                                    </span>
+                                    <input type="text" class="form-control" value="Formato Excel">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <div class="input-group">
+                                    <span class="input-group-addon beautiful">
+                                        <input type="radio" class="btnA" name="btnradioA" id="2" value="2">
+                                    </span>
+                                    <input type="text" class="form-control" value="Formato PDF">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr>
+                    <div class="form-inline">
+                        {{ form_widget(form.cuposanuales) }}
+                        
+                        <select class="form-control" id="cuenta" name="cuenta">
+                            <option value="0">--   Todos   --</option>
+                            {% for ca in formCP %}
+                                <option value="{{ ca.ID }}">
+                                    {{ ca.cuenta|raw }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <select class="form-control" id="region" name="region">
+                            <option value="0">--   Todos   --</option>
+                            {% for reg in entityHAL %}
+                            <option value="{{ reg.COD_TIPO_DEPENDENCIA }}">
+                                {{ reg.COD_TIPO_DEPENDENCIA|raw }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        
+                        <input type="hidden" name="rptCuentasTipoArchivo" id="rptCuentasTipoArchivo" value="1"/>
+                        
+                        {{ form_widget(form.Anio) }}
+                        {{ form_widget(form.Mes) }}
+                        <button id="buscar" type="submit" class="btn btn-ba">Generar</button>
+                    </div>        
+                    <div class="text-danger">
+                        {{ form_errors(form.cuposanuales) }}
+                    </div> 
+                </div>
+
+            </form>
+        </div>
+    </div>
+                
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Listado de Montos cargados por Dependencias</h3>
+        </div>
+        <div class="panel-body">
+            <form action="{{ path('reportemontospordependencias') }}" method="post" {{ form_enctype(form2) }}>
+
+                
+                <div class="form-group col-md-12">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="input-group">
+                                    <label>Cupo Anual - Cuenta - Region - Año - Mes</label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-3">
+                                <div class="input-group">
+                                    <span class="input-group-addon beautiful">
+                                        <input type="radio" class="btnB" checked="" name="btnradioB" id="1">
+                                    </span>
+                                    <input type="text" class="form-control" value="Formato Excel">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <div class="input-group">
+                                    <span class="input-group-addon beautiful">
+                                        <input type="radio" class="btnB" name="btnradioB" id="2">
+                                    </span>
+                                    <input type="text" class="form-control" value="Formato PDF">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr>
+                    
+                    <div class="form-inline">
+                        {{ form_widget(form2.cuposanuales) }}
+                        <select class="form-control" id="cuenta" name="cuenta">
+                            <option value="0">-------------</option>
+                            {% for ca in formCP %}
+                                <option value="{{ ca.ID }}">
+                                    {{ ca.cuenta|raw }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <select class="form-control" id="region" name="region">
+                            <option value="0">-------------</option>
+                            {% for reg in entityHAL2 %}
+                            <option value="{{ reg.COD_TIPO_DEPENDENCIA }}">
+                                {{ reg.COD_TIPO_DEPENDENCIA|raw }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        
+                        
+                        {{ form_widget(form2.Anio) }}
+                        {{ form_widget(form2.Mes) }}
+                        <input type="hidden" name="rptCuentasDependenciasTipoArchivo" id="rptCuentasDependenciasTipoArchivo" value="1"/>
+                        <button id="buscar" type="submit" class="btn btn-ba">Generar</button>
+                    </div>  
+                    <div class="text-danger">
+                        {{ form_errors(form2.cuposanuales) }}
+                    </div> 
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Cuentas de Terceros - Listado de Respaldo</h3>
+        </div>
+        <div class="panel-body">
+            <form action="{{ path('reportelistadorespaldo') }}" method="post" {{ form_enctype(form3) }}>
+
+                
+                <div class="form-group col-md-12">
+                    <label>Cupo Anual - Cuenta - Año - Mes</label>
+                    <div class="form-inline">
+                        {{ form_widget(form3.cuposanuales) }}
+                        <select class="form-control" id="cuenta" name="cuenta">
+                            <option value="0">-------------</option>
+                            {% for ca in formC %}
+                                <option value="{{ ca.ID }}">
+                                    {{ ca.cuenta|raw }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {{ form_widget(form3.Anio) }}
+                        {{ form_widget(form3.Mes) }}
+                        <button id="buscar" type="submit" class="btn btn-ba">Generar</button>
+                    </div>  
+                    <div class="text-danger">
+                        {{ form_errors(form3.cuposanuales) }}
+                    </div> 
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Cuentas de Terceros - Interdeposito</h3>
+        </div>
+        <div class="panel-body">
+            <form action="{{ path('reporteinterdeposito') }}" method="post" {{ form_enctype(form4) }}>
+
+                
+                <div class="form-group col-md-12">
+                    <label>Cupo Anual - Cuenta - Año - Mes</label>
+                    <div class="form-inline">
+                        {{ form_widget(form4.cuposanuales) }}
+                        <select class="form-control" id="cuenta" name="cuenta">
+                            <option value="0">-------------</option>
+                            {% for ca in formC %}
+                                <option value="{{ ca.ID }}">
+                                    {{ ca.cuenta|raw }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {{ form_widget(form4.Anio) }}
+                        {{ form_widget(form4.Mes) }}
+                        <button id="buscar" type="submit" class="btn btn-ba">Generar</button>
+                    </div>  
+                    <div class="text-danger">
+                        {{ form_errors(form4.cuposanuales) }}
+                    </div> 
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Cuentas de Terceros - TR</h3>
+        </div>
+        <div class="panel-body">
+            <form action="{{ path('reporteTR') }}" method="post" {{ form_enctype(form5) }}>
+
+                
+                <div class="form-group col-md-12">
+                    <label>Cupo Anual - Cuenta - Año - Mes</label>
+                    <div class="form-inline">
+                        {{ form_widget(form5.cuposanuales) }}
+                        <select class="form-control" id="cuenta" name="cuenta">
+                            <option value="0">-------------</option>
+                            {% for ca in formC %}
+                                <option value="{{ ca.ID }}">
+                                    {{ ca.cuenta|raw }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {{ form_widget(form5.Anio) }}
+                        {{ form_widget(form5.Mes) }}
+                        <input type='text' name="fechapago" id="fechapago" class="form-control"/>
+                            
+                        <button id="buscar" type="submit" class="btn btn-ba">Generar</button>
+                    </div>  
+                    <div class="text-danger">
+                        {{ form_errors(form5.cuposanuales) }}
+                    </div> 
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Listado RG por mes</h3>
+        </div>
+        <div class="panel-body">
+            <form action="{{ path('reporteLRG') }}" method="post" {{ form_enctype(form6) }}>
+
+                
+                <div class="form-group col-md-12">
+                    <label>Año - Mes</label>
+                    <div class="form-inline">
+
+                        {{ form_widget(form6.Anio) }}
+                        {{ form_widget(form6.Mes) }}
+                            
+                        <button id="buscar" type="submit" class="btn btn-ba">Generar</button>
+                    </div>  
+                    <div class="text-danger">
+                        {{ form_errors(form5.cuposanuales) }}
+                    </div> 
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        
+        $(document).ready(function(){
+           
+           $('.btnA').change(function(){
+               $('#rptCuentasTipoArchivo').val($(this).attr("id"));
+           })
+           
+           $('.btnB').change(function(){
+               $('#rptCuentasDependenciasTipoArchivo').val($(this).attr("id"));
+           })
+           
+           $('#buscar').each(function(){
+              $(this).click(function(){
+                 $('.alert').hide(); 
+              }); 
+           });
+            
+        });
+        
+    </script>
+{% endblock %}
